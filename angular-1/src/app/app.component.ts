@@ -2,11 +2,10 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   combineLatest,
   filter,
-  forkJoin,
+  takeUntil,
   map,
   Observable,
   Subject,
-  Subscription,
   switchMap,
   debounceTime,
 } from 'rxjs';
@@ -19,6 +18,7 @@ import { MockDataService } from './mock-data.service';
 })
 export class AppComponent implements OnInit, OnDestroy {
   searchTermByCharacters = new Subject<string>();
+  destroy$: Subject<boolean> = new Subject<boolean>();
   charactersResults$: Observable<any>;
   planetAndCharactersResults$: Observable<any>;
   isLoading: boolean = false;
@@ -34,7 +34,6 @@ export class AppComponent implements OnInit, OnDestroy {
     // 1.1. Add functionality to changeCharactersInput method. Changes searchTermByCharacters Subject value on input change.
     // YOUR CODE STARTS HERE
     const inputValue: string = element.target.value;
-    this.searchTermByCharacters.subscribe();
     this.searchTermByCharacters.next(inputValue);
     // YOUR CODE ENDS HERE
   }
@@ -47,9 +46,10 @@ export class AppComponent implements OnInit, OnDestroy {
     // 3. Add debounce to prevent API calls until user stop typing.
     this.charactersResults$ = this.searchTermByCharacters.pipe(
       // YOUR CODE STARTS HERE
-      debounceTime(1500),
       filter((value) => value.length >= 3),
-      switchMap((value) => this.mockDataService.getCharacters(value))
+      debounceTime(1500),
+      switchMap((value) => this.mockDataService.getCharacters(value)),
+      takeUntil(this.destroy$)
     );
     // YOUR CODE ENDS HERE
   }
@@ -79,20 +79,19 @@ export class AppComponent implements OnInit, OnDestroy {
     combineLatest([
       this.mockDataService.getCharactersLoader(),
       this.mockDataService.getPlanetLoader(),
-    ]).subscribe((response) => {
-      this.isLoading = response.every((item) => !item) ? false : true;
-    });
+    ])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((response) => {
+        this.isLoading = response.every((item) => !item) ? false : true;
+      });
     // YOUR CODE ENDS HERE
   }
 
   ngOnDestroy(): void {
     // 5.2 Unsubscribe from all subscriptions
     // YOUR CODE STARTS HERE
-    this.searchTermByCharacters.unsubscribe();
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
     // YOUR CODE ENDS HERE
-  }
-
-  areAllValuesTrue(elements: boolean[]): boolean {
-    return elements.every((el) => el);
   }
 }
