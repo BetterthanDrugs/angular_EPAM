@@ -7,10 +7,10 @@ import { Course, User, INFO_MESSAGE, COURSES } from './courses.model';
   styleUrls: ['./courses.component.scss'],
 })
 export class CoursesComponent {
-  public infoMessage = INFO_MESSAGE;
-  public courses: Course[] = COURSES;
-  public buttonText = 'Logout';
-  public user: User = { name: 'Tester' };
+  infoMessage = INFO_MESSAGE;
+  courses: Course[] = COURSES;
+  buttonText = 'Logout';
+  user: User = { name: 'Tester' };
 
   addCourseFunction() {
     console.log('add test');
