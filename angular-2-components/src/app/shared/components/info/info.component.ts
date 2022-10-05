@@ -1,9 +1,5 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-
-interface IInfo {
-  title: string;
-  message: string;
-}
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { IInfo, IINFO_DATA } from './info.model';
 
 @Component({
   selector: 'app-info',
@@ -11,10 +7,7 @@ interface IInfo {
   styleUrls: ['./info.component.scss'],
 })
 export class InfoComponent {
-  @Input() option: IInfo = {
-    title: '',
-    message: '',
-  };
+  @Input() option: IInfo = IINFO_DATA;
   @Input() isShowMessage = true;
   @Output() addCourseEvent = new EventEmitter();
 

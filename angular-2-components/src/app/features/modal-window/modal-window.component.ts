@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Course } from '../courses/courses.model';
+import { COURSE_DEFAULT } from './modal-window.model';
 
 @Component({
   selector: 'app-modal-window',
@@ -7,14 +8,7 @@ import { Course } from '../courses/courses.model';
   styleUrls: ['./modal-window.component.scss'],
 })
 export class ModalWindowComponent {
-  @Input() showObj: Course = {
-    authors: [],
-    creationDate: '',
-    description: '',
-    duration: 0,
-    id: '',
-    title: '',
-  };
+  @Input() showObj: Course = COURSE_DEFAULT;
   @Output() closeEvent = new EventEmitter<void>();
   constructor() {}
 
