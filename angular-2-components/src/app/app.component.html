@@ -1,3 +1,6 @@
 <div>
-  <app-courses></app-courses>
+  <app-courses
+    *ngIf="currentRoute === TEMPLATE_ROUTS_LIST.COURSES_PAGE"
+    (navigateEvent)="handleRoute($event)">
+  </app-courses>
 </div>

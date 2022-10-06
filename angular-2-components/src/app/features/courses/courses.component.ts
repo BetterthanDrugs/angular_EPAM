@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { Course, User, INFO_MESSAGE, COURSES } from './courses.model';
 
 @Component({
@@ -11,6 +11,8 @@ export class CoursesComponent {
   courses: Course[] = COURSES;
   buttonText = 'Logout';
   user: User = { name: 'Tester' };
+
+  @Output() navigateEvent = new EventEmitter();
 
   addCourseFunction() {
     console.log('add test');
