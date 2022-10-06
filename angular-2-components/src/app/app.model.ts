@@ -1,6 +1,7 @@
 export enum ROUTS_LIST {
   COURSES_PAGE = 'courses',
   LOGIN_PAGE = 'login',
+  REGISTRATION_PAGE = 'REGISTRATION',
 }
 
 export interface Account {
