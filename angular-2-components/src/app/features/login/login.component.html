@@ -1,0 +1,70 @@
+<div>
+  <app-header> </app-header>
+  <div class="login_container">
+    <form class="login_form" (ngSubmit)="login()" #loginForm="ngForm">
+      <legend class="title">Login</legend>
+      <fieldset class="login_fieldset" ngModelGroup="name">
+        <label class="label" for="account_email">
+          Email
+          <input
+            class="input"
+            id="account_email"
+            type="email"
+            required
+            [(ngModel)]="formData.account_email"
+            #account_email="ngModel"
+            name="email"
+            appEmailValidate />
+          <div
+            class="alert"
+            *ngIf="
+              account_email.errors &&
+              (account_email.dirty || account_email.touched)
+            ">
+            <p *ngIf="account_email.errors?.['required']">Email is required</p>
+            <p *ngIf="account_email.errors?.['email']" #emailHelperText>
+              {{ account_email.errors['email'].value }}
+            </p>
+          </div>
+        </label>
+        <label class="label" for="account_password">
+          Password
+          <input
+            class="input"
+            id="account_password"
+            required
+            minlength="8"
+            [type]="hidePasswordFlag ? 'password' : 'text'"
+            [(ngModel)]="formData.account_password"
+            #account_password="ngModel"
+            name="password" />
+          <span class="password-icon" (click)="passwordView()">
+            <fa-icon
+              class=""
+              size="xs"
+              [icon]="hidePasswordFlag ? eyeIcon : eyeSlashIcon">
+            </fa-icon
+          ></span>
+
+          <div
+            class="alert"
+            *ngIf="
+              account_password.errors &&
+              (account_password.dirty || account_password.touched)
+            ">
+            <p *ngIf="account_password.errors?.['required']">
+              Password is required
+            </p>
+            <p *ngIf="account_password.errors?.['minlength']">
+              Password must be at least 8 characters
+            </p>
+          </div>
+        </label>
+        <app-button text="Login"></app-button>
+      </fieldset>
+    </form>
+    <div class="question">
+      <p>If you don't have an account you can</p>
+    </div>
+  </div>
+</div>

@@ -16,6 +16,6 @@ import { EmailValidatorDirective } from './directive/email-validator.directive';
     EmailValidatorDirective,
   ],
   imports: [CommonModule, FontAwesomeModule],
-  exports: [HeaderComponent, ButtonComponent, InfoComponent, SearchComponent],
+    exports: [HeaderComponent, ButtonComponent, InfoComponent, SearchComponent, EmailValidatorDirective],
 })
 export class SharedModule {}

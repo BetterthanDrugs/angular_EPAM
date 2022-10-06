@@ -7,10 +7,6 @@ export interface Course {
   title: string;
 }
 
-export interface User {
-  name: string;
-}
-
 export const INFO_MESSAGE = {
   title: 'Empty list',
   message:

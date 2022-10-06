@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ROUTS_LIST } from './app.model';
+import { ROUTS_LIST, Account, ACCOUNT_DEFAULT } from './app.model';
 
 @Component({
   selector: 'app-root',
@@ -9,8 +9,13 @@ import { ROUTS_LIST } from './app.model';
 export class AppComponent {
   TEMPLATE_ROUTS_LIST = ROUTS_LIST;
   currentRoute: ROUTS_LIST = ROUTS_LIST.COURSES_PAGE;
+  account: Account = ACCOUNT_DEFAULT;
 
   handleRoute(route: ROUTS_LIST) {
     this.currentRoute = route;
+  }
+
+  handleLogin(account: Account) {
+    this.account = account;
   }
 }
