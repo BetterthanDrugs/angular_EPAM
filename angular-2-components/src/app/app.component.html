@@ -9,4 +9,8 @@
     (navigateEvent)="handleRoute($event)"
     (loginEvent)="handleLogin($event)"
     #login></app-login>
+  <app-registration
+    *ngIf="currentRoute === TEMPLATE_ROUTS_LIST.REGISTRATION_PAGE"
+    (navigateEvent)="handleRoute($event)"
+    (registrationEvent)="handleRegistration($event)"></app-registration>
 </div>

@@ -1,19 +1,36 @@
 <div>
   <app-header> </app-header>
-  <div class="login_container">
-    <form class="login_form" (ngSubmit)="login()" #loginForm="ngForm">
-      <legend class="title">Login</legend>
-      <fieldset class="login_fieldset" ngModelGroup="name">
+  <div class="registration_container">
+    <form [formGroup]="formData" (ngSubmit)="onSubmit()">
+      <legend class="title">Registration</legend>
+      <fieldset class="registration_fieldset">
+        <label class="label" for="account_nickname">
+          Name
+          <input
+            id="account_nickname"
+            class="input"
+            type="text"
+            required
+            formControlName="account_nickname" />
+          <div
+            class="alert"
+            *ngIf="
+              account_nickname.errors &&
+              (account_nickname.dirty || account_nickname.touched)
+            ">
+            <p *ngIf="account_nickname.errors?.['required']">
+              Name is required
+            </p>
+          </div>
+        </label>
         <label class="label" for="account_email">
           Email
           <input
-            class="input"
             id="account_email"
+            class="input"
             type="email"
             required
-            [(ngModel)]="formData.account_email"
-            #account_email="ngModel"
-            name="email"
+            formControlName="account_email"
             appEmailValidate />
           <div
             class="alert"
@@ -22,7 +39,7 @@
               (account_email.dirty || account_email.touched)
             ">
             <p *ngIf="account_email.errors?.['required']">Email is required</p>
-            <p *ngIf="account_email.errors?.['email']" #emailHelperText>
+            <p *ngIf="account_email.errors?.['email']">
               {{ account_email.errors['email'].value }}
             </p>
           </div>
@@ -30,22 +47,19 @@
         <label class="label" for="account_password">
           Password
           <input
-            class="input"
             id="account_password"
+            class="input"
             required
             minlength="8"
             [type]="hidePasswordFlag ? 'password' : 'text'"
-            [(ngModel)]="formData.account_password"
-            #account_password="ngModel"
-            name="password" />
-          <span class="password-icon" (click)="passwordViewLogin()">
+            formControlName="account_password" />
+          <span class="password-icon" (click)="passwordViewRegistration()">
             <fa-icon
               class=""
               size="xs"
               [icon]="hidePasswordFlag ? eyeIcon : eyeSlashIcon">
             </fa-icon
           ></span>
-
           <div
             class="alert"
             *ngIf="
@@ -60,12 +74,12 @@
             </p>
           </div>
         </label>
-        <app-button text="Login"></app-button>
+        <app-button text="Registration"></app-button>
       </fieldset>
     </form>
     <div class="question">
-      <p>If you don't have an account you can</p>
-      <a href="#" (click)="navigateToRegistration($event)">Registration</a>
+      <p>If you have an account you can</p>
+      <a href="#" (click)="navigateToLogin($event)">Login</a>
     </div>
   </div>
 </div>

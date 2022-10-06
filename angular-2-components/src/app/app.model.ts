@@ -29,3 +29,12 @@ export const ACCOUNT_MOCK_DATA = {
   account_password: 'qwerty1234',
   account_status: 'user',
 };
+
+export const passwordView = (flag: boolean) => {
+  return !flag;
+};
+
+export const randomInteger = (min: number, max: number) => {
+  let rand = min + Math.random() * (max + 1 - min);
+  return Math.floor(rand).toString();
+};

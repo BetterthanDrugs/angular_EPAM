@@ -18,4 +18,8 @@ export class AppComponent {
   handleLogin(account: Account) {
     this.account = account;
   }
+
+  handleRegistration(account: Account) {
+    this.account = account;
+  }
 }
