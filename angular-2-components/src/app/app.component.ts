@@ -8,7 +8,7 @@ import { ROUTS_LIST, Account, ACCOUNT_DEFAULT } from './app.model';
 })
 export class AppComponent {
   TEMPLATE_ROUTS_LIST = ROUTS_LIST;
-  currentRoute: ROUTS_LIST = ROUTS_LIST.COURSES_PAGE;
+  currentRoute: ROUTS_LIST = ROUTS_LIST.LOGIN_PAGE;
   account: Account = ACCOUNT_DEFAULT;
 
   handleRoute(route: ROUTS_LIST) {

@@ -1,7 +1,12 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import { ROUTS_LIST, passwordView, randomInteger } from 'src/app/app.model';
+import {
+  ROUTS_LIST,
+  passwordView,
+  randomInteger,
+  HIDE_PASSWORD_FLAG,
+} from 'src/app/app.model';
 
 @Component({
   selector: 'app-registration',
@@ -11,8 +16,8 @@ import { ROUTS_LIST, passwordView, randomInteger } from 'src/app/app.model';
 export class RegistrationComponent {
   eyeIcon = faEye;
   eyeSlashIcon = faEyeSlash;
-  hidePasswordFlag = true;
-  formData: FormGroup = new FormGroup({
+  hidePasswordFlag = HIDE_PASSWORD_FLAG;
+  formDataRegistration: FormGroup = new FormGroup({
     account_nickname: new FormControl(''),
     account_email: new FormControl(''),
     account_password: new FormControl(''),
@@ -26,26 +31,26 @@ export class RegistrationComponent {
   @Output() registrationEvent = new EventEmitter();
 
   get account_nickname(): any {
-    return this.formData.get('account_nickname');
+    return this.formDataRegistration.get('account_nickname');
   }
 
   get account_email(): any {
-    return this.formData.get('account_email');
+    return this.formDataRegistration.get('account_email');
   }
 
   get account_password(): any {
-    return this.formData.get('account_password');
+    return this.formDataRegistration.get('account_password');
   }
 
   onSubmit() {
-    if (!this.formData.valid) {
-      this.formData.markAllAsTouched();
+    if (!this.formDataRegistration.valid) {
+      this.formDataRegistration.markAllAsTouched();
     } else {
-      this.formData.patchValue({
+      this.formDataRegistration.patchValue({
         account_id: randomInteger(1, 15),
         account_status: 'default user',
       });
-      this.registrationEvent.emit(this.formData.value);
+      this.registrationEvent.emit(this.formDataRegistration.value);
       this.navigateEvent.emit(ROUTS_LIST.COURSES_PAGE);
     }
   }
