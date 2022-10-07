@@ -6,6 +6,7 @@ import { InfoComponent } from './components/info/info.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SearchComponent } from './components/search/search.component';
 import { EmailValidatorDirective } from './directive/email-validator.directive';
+import {FormsModule} from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -15,7 +16,7 @@ import { EmailValidatorDirective } from './directive/email-validator.directive';
     SearchComponent,
     EmailValidatorDirective,
   ],
-  imports: [CommonModule, FontAwesomeModule],
+    imports: [CommonModule, FontAwesomeModule, FormsModule],
     exports: [HeaderComponent, ButtonComponent, InfoComponent, SearchComponent, EmailValidatorDirective],
 })
 export class SharedModule {}

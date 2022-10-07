@@ -2,10 +2,13 @@
   <app-header>
     <div>{{ account.account_email }}</div>
     <app-button
-      [text]="buttonText"
+      [text]="buttonLogoutText"
       (clickButton)="logoutFunction()"></app-button>
   </app-header>
-  <app-course-list [courses]="courses"> </app-course-list>
+  <app-search
+    placeholder="Type course name ..."
+    (searchEvent)="searchCourse($event)"></app-search>
+  <app-course-list [courses]="coursesByFilter"> </app-course-list>
   <app-info
     [option]="infoMessage"
     [isShowMessage]="!courses.length"

@@ -17,18 +17,29 @@ import { Account, ACCOUNT_DEFAULT, ROUTS_LIST } from '../../app.model';
 export class CoursesComponent {
   infoMessage = INFO_MESSAGE;
   courses: Course[] = COURSES;
-  buttonText = 'Logout';
+  buttonLogoutText = 'Logout';
+  filterValue = '';
   @Input() account: Account = ACCOUNT_DEFAULT;
   @Output() navigateEvent = new EventEmitter();
 
   addCourseFunction() {
     console.log('add test');
   }
-  constructor() {
-  }
+  constructor() {}
 
   logoutFunction(): void {
     console.log('logout test');
     this.navigateEvent.emit(ROUTS_LIST.LOGIN_PAGE);
+  }
+
+  searchCourse(courseName: string) {
+    console.log('search course test');
+    this.filterValue = courseName;
+  }
+
+  get coursesByFilter() {
+    return this.courses.filter(course =>
+      course.title.match(new RegExp(this.filterValue, 'i'))
+    );
   }
 }
