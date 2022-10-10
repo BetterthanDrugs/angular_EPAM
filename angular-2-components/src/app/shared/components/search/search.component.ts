@@ -11,7 +11,7 @@ export class SearchComponent {
   @Input() placeholder = '';
   @Output() searchEvent = new EventEmitter<string>();
 
-  searchByValue() {
+  searchByValue(): void {
     this.searchEvent.emit(this.searchValue);
   }
 }

@@ -1,10 +1,13 @@
 <div>
   <app-header> </app-header>
   <div class="registration_container">
-    <form [formGroup]="formDataRegistration" (ngSubmit)="onSubmit()">
+    <form
+      class="registration_form"
+      (ngSubmit)="onSubmit()"
+      [formGroup]="formDataRegistration">
       <legend class="title">Registration</legend>
       <fieldset class="registration_fieldset">
-        <label class="label" for="account_nickname">
+        <label class="label">
           Name
           <input
             id="account_nickname"
@@ -15,15 +18,15 @@
           <div
             class="alert"
             *ngIf="
-              account_nickname.errors &&
+              account_nickname.invalid &&
               (account_nickname.dirty || account_nickname.touched)
             ">
             <p *ngIf="account_nickname.errors?.['required']">
-              Name is required
+              {{ registrationTemplateStrings.NAME_REQUIRED }}
             </p>
           </div>
         </label>
-        <label class="label" for="account_email">
+        <label class="label">
           Email
           <input
             id="account_email"
@@ -35,42 +38,40 @@
           <div
             class="alert"
             *ngIf="
-              account_email.errors &&
+              account_email.invalid &&
               (account_email.dirty || account_email.touched)
             ">
-            <p *ngIf="account_email.errors?.['required']">Email is required</p>
+            <p *ngIf="account_email.errors?.['required']">
+              {{ registrationTemplateStrings.EMAIL_REQUIRED }}
+            </p>
             <p *ngIf="account_email.errors?.['email']">
               {{ account_email.errors['email'].value }}
             </p>
           </div>
         </label>
-        <label class="label" for="account_password">
+        <label class="label">
           Password
           <input
             id="account_password"
             class="input"
             required
             minlength="8"
-            [type]="hidePasswordFlag ? 'password' : 'text'"
+            [type]="currentPasswordInputType"
             formControlName="account_password" />
           <span class="password-icon" (click)="passwordViewRegistration()">
-            <fa-icon
-              class=""
-              size="xs"
-              [icon]="hidePasswordFlag ? eyeIcon : eyeSlashIcon">
-            </fa-icon
+            <fa-icon class="" size="xs" [icon]="currentEyeIcon"> </fa-icon
           ></span>
           <div
             class="alert"
             *ngIf="
-              account_password.errors &&
+              account_password.invalid &&
               (account_password.dirty || account_password.touched)
             ">
             <p *ngIf="account_password.errors?.['required']">
-              Password is required
+              {{ registrationTemplateStrings.PASSWORD_REQUIRED }}
             </p>
             <p *ngIf="account_password.errors?.['minlength']">
-              Password must be at least 8 characters
+              {{ registrationTemplateStrings.PASSWORD_LENGTH }}
             </p>
           </div>
         </label>

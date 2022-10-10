@@ -11,15 +11,15 @@ export class AppComponent {
   currentRoute: ROUTS_LIST = ROUTS_LIST.LOGIN_PAGE;
   account: Account = ACCOUNT_DEFAULT;
 
-  handleRoute(route: ROUTS_LIST) {
+  handleRoute(route: ROUTS_LIST): void {
     this.currentRoute = route;
   }
 
-  handleLogin(account: Account) {
+  handleLogin(account: Account): void {
     this.account = account;
   }
 
-  handleRegistration(account: Account) {
+  handleRegistration(account: Account): void {
     this.account = account;
   }
 }

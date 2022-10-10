@@ -1,11 +1,16 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import {
   ROUTS_LIST,
   passwordView,
   randomInteger,
+  TEMPLATE_STRINGS,
   HIDE_PASSWORD_FLAG,
+  HIDDEN_PASSWORD_INPUT_TYPE,
+  NOT_HIDDEN_PASSWORD_INPUT_TYPE,
+  LOWER_THRESHOLD_FOR_RANDOM_ID,
+  UPPER_THRESHOLD_FOR_RANDOM_ID,
 } from 'src/app/app.model';
 
 @Component({
@@ -13,19 +18,35 @@ import {
   templateUrl: './registration.component.html',
   styleUrls: ['./registration.component.scss'],
 })
-export class RegistrationComponent {
-  eyeIcon = faEye;
-  eyeSlashIcon = faEyeSlash;
+export class RegistrationComponent implements OnInit {
+  currentEyeIcon = faEye;
+  currentPasswordInputType = HIDDEN_PASSWORD_INPUT_TYPE;
   hidePasswordFlag = HIDE_PASSWORD_FLAG;
+  registrationTemplateStrings = TEMPLATE_STRINGS;
   formDataRegistration: FormGroup = new FormGroup({
     account_nickname: new FormControl(''),
     account_email: new FormControl(''),
     account_password: new FormControl(''),
-    //todo как можно еще определить значения, которых нет в template,
-    // но должны быть в formData?
     account_id: new FormControl(''),
     account_status: new FormControl(''),
   });
+
+  findInvalidControls() {
+    const invalid = [];
+    const controls = this.formDataRegistration.controls;
+    for (const name in controls) {
+      console.log('contr: ', controls[name].invalid);
+      if (controls[name].invalid) {
+        invalid.push(name);
+      }
+    }
+    return invalid;
+  }
+
+  ngOnInit() {
+    console.log('invalid: ', this.findInvalidControls());
+    console.log('FORM: ', this.formDataRegistration);
+  }
 
   @Output() navigateEvent = new EventEmitter();
   @Output() registrationEvent = new EventEmitter();
@@ -42,12 +63,15 @@ export class RegistrationComponent {
     return this.formDataRegistration.get('account_password');
   }
 
-  onSubmit() {
+  onSubmit(): void {
     if (!this.formDataRegistration.valid) {
       this.formDataRegistration.markAllAsTouched();
     } else {
       this.formDataRegistration.patchValue({
-        account_id: randomInteger(1, 15),
+        account_id: randomInteger(
+          LOWER_THRESHOLD_FOR_RANDOM_ID,
+          UPPER_THRESHOLD_FOR_RANDOM_ID
+        ),
         account_status: 'default user',
       });
       this.registrationEvent.emit(this.formDataRegistration.value);
@@ -60,9 +84,11 @@ export class RegistrationComponent {
     this.navigateEvent.emit(ROUTS_LIST.LOGIN_PAGE);
   }
 
-  //todo не уверен, что правильно переиспользую функцию
-  // из другого модуля для template текущего компонента
-  passwordViewRegistration() {
-    passwordView(this.hidePasswordFlag);
+  passwordViewRegistration(): void {
+    this.hidePasswordFlag = passwordView(this.hidePasswordFlag);
+    this.currentEyeIcon = this.hidePasswordFlag ? faEye : faEyeSlash;
+    this.currentPasswordInputType = this.hidePasswordFlag
+      ? HIDDEN_PASSWORD_INPUT_TYPE
+      : NOT_HIDDEN_PASSWORD_INPUT_TYPE;
   }
 }

@@ -22,7 +22,7 @@ export class CoursesComponent {
   @Input() account: Account = ACCOUNT_DEFAULT;
   @Output() navigateEvent = new EventEmitter();
 
-  addCourseFunction() {
+  addCourseFunction(): void {
     console.log('add test');
   }
   constructor() {}
@@ -32,12 +32,12 @@ export class CoursesComponent {
     this.navigateEvent.emit(ROUTS_LIST.LOGIN_PAGE);
   }
 
-  searchCourse(courseName: string) {
+  searchCourse(courseName: string): void {
     console.log('search course test');
     this.filterValue = courseName;
   }
 
-  get coursesByFilter() {
+  get coursesByFilter(): Course[] {
     return this.courses.filter(course =>
       course.title.match(new RegExp(this.filterValue, 'i'))
     );

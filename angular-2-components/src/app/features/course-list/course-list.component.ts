@@ -29,15 +29,15 @@ export class CourseListComponent {
 
   constructor() {}
 
-  showCourseButtonEvent(course: Course) {
+  showCourseButtonEvent(course: Course): void {
     this.showModalFlag = true;
     this.modalObj = { ...course };
     // this.showCourseEvent.emit(course.id);
   }
-  editCourseButtonEvent(course: Course) {
+  editCourseButtonEvent(course: Course): void {
     // this.editCourseEvent.emit(course.id);
   }
-  deleteCourseButtonEvent(course: Course) {
+  deleteCourseButtonEvent(course: Course): void {
     // this.deleteCourseEvent.emit(course.id);
   }
 }

@@ -7,7 +7,7 @@
       [formGroup]="formDataLogin">
       <legend class="title">Login</legend>
       <fieldset class="login_fieldset">
-        <label class="label" for="account_email">
+        <label class="label">
           Email
           <input
             id="account_email"
@@ -22,27 +22,25 @@
               account_email.errors &&
               (account_email.dirty || account_email.touched)
             ">
-            <p *ngIf="account_email.errors?.['required']">Email is required</p>
+            <p *ngIf="account_email.errors?.['required']">
+              {{ loginTemplateStrings.EMAIL_REQUIRED }}
+            </p>
             <p *ngIf="account_email.errors?.['email']">
               {{ account_email.errors['email'].value }}
             </p>
           </div>
         </label>
-        <label class="label" for="account_password">
+        <label class="label">
           Password
           <input
             id="account_password"
             class="input"
             required
             minlength="8"
-            [type]="hidePasswordFlag ? 'password' : 'text'"
+            [type]="currentPasswordInputType"
             formControlName="account_password" />
           <span class="password-icon" (click)="passwordViewLogin()">
-            <fa-icon
-              class=""
-              size="xs"
-              [icon]="hidePasswordFlag ? eyeIcon : eyeSlashIcon">
-            </fa-icon
+            <fa-icon class="" size="xs" [icon]="currentEyeIcon"> </fa-icon
           ></span>
           <div
             class="alert"
@@ -51,10 +49,10 @@
               (account_password.dirty || account_password.touched)
             ">
             <p *ngIf="account_password.errors?.['required']">
-              Password is required
+              {{ loginTemplateStrings.PASSWORD_REQUIRED }}
             </p>
             <p *ngIf="account_password.errors?.['minlength']">
-              Password must be at least 8 characters
+              {{ loginTemplateStrings.PASSWORD_LENGTH }}
             </p>
           </div>
         </label>

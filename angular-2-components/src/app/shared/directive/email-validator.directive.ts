@@ -4,18 +4,10 @@ import {
   NG_VALIDATORS,
   ValidationErrors,
   Validator,
-  ValidatorFn,
 } from '@angular/forms';
 
-export const REG_EXP_EMAIL =
+export const EMAIL_REGEXP =
   /^(|(([A-Za-z0-9]+_+)|([A-Za-z0-9]+\-+)|([A-Za-z0-9]+\.+)|([A-Za-z0-9]+\++))*[A-Za-z0-9]+@((\w+\-+)|(\w+\.))*\w{1,63}\.[a-zA-Z]{2,6})$/i;
-
-export function emailValidator(): ValidatorFn {
-  return (control: AbstractControl): ValidationErrors | null => {
-    const error = !REG_EXP_EMAIL.test(control.value);
-    return error ? { email: { value: `Should be valid email` } } : null;
-  };
-}
 
 @Directive({
   selector: '[appEmailValidate]',
@@ -29,6 +21,7 @@ export function emailValidator(): ValidatorFn {
 })
 export class EmailValidatorDirective implements Validator {
   validate(control: AbstractControl): ValidationErrors | null {
-    return emailValidator()(control);
+    const error = !EMAIL_REGEXP.test(control.value);
+    return error ? { email: { value: 'Should be valid email' } } : null;
   }
 }
