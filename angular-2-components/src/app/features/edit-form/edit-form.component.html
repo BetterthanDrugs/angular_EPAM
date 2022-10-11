@@ -1,0 +1,103 @@
+<div class="backdrop"></div>
+<div class="modal">
+  <nav class="navbar">
+    <form [formGroup]="formDataEdit" class="form" (ngSubmit)="onSubmit()">
+      <fieldset class="edit-add-fieldset">
+        <div class="title_field">
+          <label class="label">
+            Title
+            <input
+              id="edit_title"
+              class="input"
+              type="text"
+              required
+              formControlName="edit_title" />
+            <div
+              class="alert"
+              *ngIf="
+                edit_title.errors && (edit_title.dirty || edit_title.touched)
+              ">
+              <p *ngIf="edit_title.errors?.['required']">
+                {{ addEditFormTemplateStrings.TITLE_REQUIRED }}
+              </p>
+            </div>
+          </label>
+          <app-button text="{{ buttonSubmitText }}"></app-button>
+        </div>
+        <label class="label">
+          Description
+          <textarea
+            class="input description"
+            type="description"
+            required
+            formControlName="edit_description">
+          </textarea>
+          <div
+            class="alert"
+            *ngIf="
+              edit_description.errors &&
+              (edit_description.dirty || edit_description.touched)
+            ">
+            <p *ngIf="edit_description.errors?.['required']">
+              {{ addEditFormTemplateStrings.DESCRIPTION_REQUIRED }}
+            </p>
+            <p *ngIf="edit_description.errors?.['description']">
+              {{ edit_description.errors['description'].value }}
+            </p>
+          </div>
+        </label>
+      </fieldset>
+      <div class="list-fields">
+        <div class="list-fields_item">
+          <fieldset class="edit-add-fieldset authors">
+            <span class="block-title">Add authors</span>
+            <label class="label">
+              Authors name
+              <input class="input" type="text" formControlName="new_author" />
+            </label>
+            <app-button type="button" text="Add author"> </app-button>
+          </fieldset>
+          <fieldset class="edit-add-fieldset">
+            <span class="block-title">Duration</span>
+            <label class="label">
+              Duration
+              <input
+                class="input"
+                type="number"
+                required
+                formControlName="edit_duration" />
+              <div
+                class="alert"
+                *ngIf="
+                  edit_duration.errors &&
+                  (edit_duration.dirty || edit_duration.touched)
+                ">
+                <p *ngIf="edit_duration.errors?.['required']">
+                  {{ addEditFormTemplateStrings.DURATION_REQUIRED }}
+                </p>
+                <p *ngIf="edit_duration.errors?.['min']">
+                  {{ addEditFormTemplateStrings.DURATION_MIN }}
+                </p>
+              </div>
+            </label>
+            <p class="duration_info">
+              Duration:
+              <span>{{ edit_duration.value | durationPipe }}</span> hours
+            </p>
+          </fieldset>
+        </div>
+        <fieldset class="edit-add-fieldset list-fields_item">
+          <span class="block-title">Authors list</span>
+          <ul>
+            <li class="author-item" *ngFor="let author of edit_authors.value">
+              <span>{{ author }}</span>
+              <app-button type="button" text="Delete"></app-button>
+            </li>
+          </ul>
+          <span *ngIf="edit_authors.value.length === 0">Empty</span>
+        </fieldset>
+      </div>
+    </form>
+  </nav>
+  <app-button text="Close" (click)="closeModalButtonEvent()"></app-button>
+</div>

@@ -8,6 +8,10 @@ export enum TEMPLATE_STRINGS {
   EMAIL_REQUIRED = 'Email is required',
   NAME_REQUIRED = 'Name is required',
   PASSWORD_REQUIRED = 'Password is required',
+  DESCRIPTION_REQUIRED = 'Description is required',
+  TITLE_REQUIRED = 'Title is required',
+  DURATION_REQUIRED = 'Duration is required',
+  DURATION_MIN = 'Duration should be at least 0',
   PASSWORD_LENGTH = 'Password length must be at least 8 characters',
 }
 

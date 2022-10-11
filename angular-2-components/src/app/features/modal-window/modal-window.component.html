@@ -5,11 +5,13 @@
     <h3>
       <span class="caption">Authors: </span>{{ showObj.authors.join(', ') }}
       <span>{{ ' | ' }}</span>
-      <span class="caption">Duration: </span>{{ showObj.duration * 60 * 1000 | date: 'HH:mm' }} hours
+      <span class="caption">Duration: </span
+      >{{ showObj.duration * 60 * 1000 | date: 'HH:mm' }} hours
       <span>{{ ' | ' }}</span>
-      <span class="caption">Created: </span>{{ showObj.creationDate | date: 'dd.MM.yyyy' }}
+      <span class="caption">Created: </span
+      >{{ showObj.creationDate | date: 'dd.MM.yyyy' }}
     </h3>
   </nav>
-  <p>{{ showObj.description }}</p>
-  <button class="button" (click)="closeModalButtonEvent()">Close</button>
+  <p class="description_text">{{ showObj.description }}</p>
+  <app-button text="Close" (click)="closeModalButtonEvent()"></app-button>
 </div>

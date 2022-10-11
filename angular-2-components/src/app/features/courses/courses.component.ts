@@ -17,12 +17,23 @@ import { Account, ACCOUNT_DEFAULT, ROUTS_LIST } from '../../app.model';
 export class CoursesComponent {
   infoMessage = INFO_MESSAGE;
   courses: Course[] = COURSES;
+  showAddFormFlag = false;
+  addFormButtonSubmitText = 'Add Course';
+  modalObj: Course = {
+    id: '',
+    title: '',
+    description: '',
+    creationDate: '',
+    duration: 0,
+    authors: [],
+  };
   buttonLogoutText = 'Logout';
   filterValue = '';
   @Input() account: Account = ACCOUNT_DEFAULT;
   @Output() navigateEvent = new EventEmitter();
 
   addCourseFunction(): void {
+    this.showAddFormFlag = true;
     console.log('add test');
   }
   constructor() {}

@@ -7,8 +7,7 @@
   <app-login
     *ngIf="currentRoute === TEMPLATE_ROUTS_LIST.LOGIN_PAGE"
     (navigateEvent)="handleRoute($event)"
-    (loginEvent)="handleLogin($event)"
-    #login></app-login>
+    (loginEvent)="handleLogin($event)"></app-login>
   <app-registration
     *ngIf="currentRoute === TEMPLATE_ROUTS_LIST.REGISTRATION_PAGE"
     (navigateEvent)="handleRoute($event)"

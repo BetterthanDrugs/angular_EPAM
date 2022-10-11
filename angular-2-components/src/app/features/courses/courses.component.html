@@ -8,6 +8,11 @@
   <app-search
     placeholder="Type course name ..."
     (searchEvent)="searchCourse($event)"></app-search>
+  <app-edit-form
+    *ngIf="showAddFormFlag"
+    (closeEvent)="showAddFormFlag = false"
+    [buttonSubmitText]="addFormButtonSubmitText"
+    [currentObj]="modalObj"></app-edit-form>
   <app-course-list [courses]="coursesByFilter"> </app-course-list>
   <app-info
     [option]="infoMessage"

@@ -8,6 +8,7 @@ import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 })
 export class ButtonComponent {
   @Input() text = '';
+  @Input() type = 'submit';
   @Input() icon?: IconDefinition;
   @Output() clickButton = new EventEmitter();
 

@@ -6,6 +6,7 @@ import { InfoComponent } from './components/info/info.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SearchComponent } from './components/search/search.component';
 import { EmailValidatorDirective } from './directive/email-validator.directive';
+import { DurationPipe } from './pipes/duration.pipe';
 import { FormsModule } from '@angular/forms';
 
 @NgModule({
@@ -15,6 +16,7 @@ import { FormsModule } from '@angular/forms';
     InfoComponent,
     SearchComponent,
     EmailValidatorDirective,
+    DurationPipe,
   ],
   imports: [CommonModule, FontAwesomeModule, FormsModule],
   exports: [
@@ -23,6 +25,7 @@ import { FormsModule } from '@angular/forms';
     InfoComponent,
     SearchComponent,
     EmailValidatorDirective,
+    DurationPipe,
   ],
 })
 export class SharedModule {}
