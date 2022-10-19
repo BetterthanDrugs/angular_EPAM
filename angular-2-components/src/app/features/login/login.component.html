@@ -1,4 +1,8 @@
 <div>
+  <app-modal-window
+    *ngIf="showModalFlag"
+    [modalMessage]="modalMessage"
+    (closeEvent)="routerPushButtonEvent()"></app-modal-window>
   <app-header> </app-header>
   <div class="login_container">
     <form
@@ -14,19 +18,16 @@
             class="input"
             type="email"
             required
-            formControlName="account_email"
+            formControlName="email"
             appEmailValidate />
           <div
             class="alert"
-            *ngIf="
-              account_email.errors &&
-              (account_email.dirty || account_email.touched)
-            ">
-            <p *ngIf="account_email.errors?.['required']">
+            *ngIf="email.errors && (email.dirty || email.touched)">
+            <p *ngIf="email.errors?.['required']">
               {{ loginTemplateStrings.EMAIL_REQUIRED }}
             </p>
-            <p *ngIf="account_email.errors?.['email']">
-              {{ account_email.errors['email'].value }}
+            <p *ngIf="email.errors?.['email']">
+              {{ email.errors['email'].value }}
             </p>
           </div>
         </label>
@@ -38,20 +39,17 @@
             required
             minlength="8"
             [type]="currentPasswordInputType"
-            formControlName="account_password" />
+            formControlName="password" />
           <span class="password-icon" (click)="passwordViewLogin()">
             <fa-icon class="" size="xs" [icon]="currentEyeIcon"> </fa-icon
           ></span>
           <div
             class="alert"
-            *ngIf="
-              account_password.errors &&
-              (account_password.dirty || account_password.touched)
-            ">
-            <p *ngIf="account_password.errors?.['required']">
+            *ngIf="password.errors && (password.dirty || password.touched)">
+            <p *ngIf="password.errors?.['required']">
               {{ loginTemplateStrings.PASSWORD_REQUIRED }}
             </p>
-            <p *ngIf="account_password.errors?.['minlength']">
+            <p *ngIf="password.errors?.['minlength']">
               {{ loginTemplateStrings.PASSWORD_LENGTH }}
             </p>
           </div>

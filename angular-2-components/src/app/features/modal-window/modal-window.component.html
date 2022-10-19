@@ -1,17 +1,5 @@
 <div class="backdrop"></div>
 <div class="modal">
-  <nav class="navbar">
-    <h1>{{ showObj.title }}</h1>
-    <h3>
-      <span class="caption">Authors: </span>{{ showObj.authors.join(', ') }}
-      <span>{{ ' | ' }}</span>
-      <span class="caption">Duration: </span
-      >{{ showObj.duration * 60 * 1000 | date: 'HH:mm' }} hours
-      <span>{{ ' | ' }}</span>
-      <span class="caption">Created: </span
-      >{{ showObj.creationDate | date: 'dd.MM.yyyy' }}
-    </h3>
-  </nav>
-  <p class="description_text">{{ showObj.description }}</p>
+  <h1>{{ modalMessage }}</h1>
   <app-button text="Close" (click)="closeModalButtonEvent()"></app-button>
 </div>

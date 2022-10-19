@@ -6,7 +6,7 @@ import { CourseComponent } from '../course/course.component';
 import { CourseListComponent } from '../course-list/course-list.component';
 import { ModalWindowComponent } from '../modal-window/modal-window.component';
 import { EditFormComponent } from '../edit-form/edit-form.component';
-import {ReactiveFormsModule} from "@angular/forms";
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -18,6 +18,6 @@ import {ReactiveFormsModule} from "@angular/forms";
   ],
   imports: [CommonModule, SharedModule, ReactiveFormsModule],
   bootstrap: [CoursesComponent],
-  exports: [CoursesComponent],
+  exports: [CoursesComponent, ModalWindowComponent],
 })
 export class CoursesModule {}

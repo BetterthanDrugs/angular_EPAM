@@ -1,15 +1,18 @@
-import { Component, EventEmitter, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { FormControl, FormGroup } from '@angular/forms';
 import {
-  ACCOUNT_MOCK_DATA,
   HIDE_PASSWORD_FLAG,
   HIDDEN_PASSWORD_INPUT_TYPE,
   NOT_HIDDEN_PASSWORD_INPUT_TYPE,
-  ROUTS_LIST,
   passwordView,
+  ROUTS_LIST,
   TEMPLATE_STRINGS,
+  ACCOUNT_MOCK_REG_DATA,
+  LOGIN_RQ_STATUS,
 } from '../../app.model';
+import { AuthService } from '../../shared/services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -22,44 +25,50 @@ export class LoginComponent implements OnInit {
   hidePasswordFlag = HIDE_PASSWORD_FLAG;
   loginTemplateStrings = TEMPLATE_STRINGS;
   formDataLogin: FormGroup = new FormGroup({
-    account_nickname: new FormControl(ACCOUNT_MOCK_DATA.account_nickname),
-    account_email: new FormControl(ACCOUNT_MOCK_DATA.account_email),
-    account_password: new FormControl(ACCOUNT_MOCK_DATA.account_password),
-    account_id: new FormControl(ACCOUNT_MOCK_DATA.account_id),
-    account_status: new FormControl(ACCOUNT_MOCK_DATA.account_status),
+    name: new FormControl(ACCOUNT_MOCK_REG_DATA.name),
+    email: new FormControl(ACCOUNT_MOCK_REG_DATA.email),
+    password: new FormControl(ACCOUNT_MOCK_REG_DATA.password),
   });
+  currentRouterUrl = ROUTS_LIST.LOGIN_PAGE;
+  showModalFlag = false;
+  modalMessage = '';
 
-  findInvalidControls() {
-    const invalid = [];
-    const controls = this.formDataLogin.controls;
-    for (const name in controls) {
-      if (controls[name].invalid) {
-        invalid.push(name);
+  constructor(private _authService: AuthService, private _router: Router) {}
+
+  ngOnInit(): void {
+    this._authService.authStatusFlag.subscribe(authStatusFlag => {
+      if (authStatusFlag) {
+        console.log('isAuthorized');
+        this.currentRouterUrl = ROUTS_LIST.COURSES_PAGE;
+        this.modalMessage = LOGIN_RQ_STATUS.RQ_SUCCESS;
+      } else {
+        console.log('isNotAuthorized');
+        this.currentRouterUrl = ROUTS_LIST.LOGIN_PAGE;
+        this.modalMessage = LOGIN_RQ_STATUS.BAD_RQ_ERROR;
       }
-    }
-    return invalid;
-  }
-
-  ngOnInit() {
-    console.log('invalid: ', this.findInvalidControls());
-    console.log('FORM: ', this.formDataLogin);
+    });
   }
 
   @Output() navigateEvent = new EventEmitter();
   @Output() loginEvent = new EventEmitter();
 
-  get account_email(): any {
-    return this.formDataLogin.get('account_email');
+  get email(): any {
+    return this.formDataLogin.get('email');
   }
 
-  get account_password(): any {
-    return this.formDataLogin.get('account_password');
+  get password(): any {
+    return this.formDataLogin.get('password');
+  }
+
+  routerPushButtonEvent(): void {
+    this.showModalFlag = false;
+    this._router.navigateByUrl(this.currentRouterUrl);
   }
 
   onSubmit(): void {
     if (this.formDataLogin.valid) {
-      this.loginEvent.emit(this.formDataLogin.value);
-      this.navigateEvent.emit(ROUTS_LIST.COURSES_PAGE);
+      this._authService.login(this.formDataLogin.value);
+      this.showModalEvent(this.modalMessage);
     } else {
       this.formDataLogin.markAllAsTouched();
     }
@@ -67,7 +76,8 @@ export class LoginComponent implements OnInit {
 
   navigateToRegistration(event: Event) {
     event.preventDefault();
-    this.navigateEvent.emit(ROUTS_LIST.REGISTRATION_PAGE);
+    this.currentRouterUrl = ROUTS_LIST.REGISTRATION_PAGE;
+    this._router.navigateByUrl(this.currentRouterUrl);
   }
 
   passwordViewLogin(): void {
@@ -76,5 +86,11 @@ export class LoginComponent implements OnInit {
     this.currentPasswordInputType = this.hidePasswordFlag
       ? HIDDEN_PASSWORD_INPUT_TYPE
       : NOT_HIDDEN_PASSWORD_INPUT_TYPE;
+  }
+
+  showModalEvent(message: string): void {
+    console.log('showModalEvent');
+    this.showModalFlag = true;
+    this.modalMessage = message;
   }
 }

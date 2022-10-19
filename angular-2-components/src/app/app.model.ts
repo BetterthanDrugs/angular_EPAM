@@ -1,7 +1,12 @@
 export enum ROUTS_LIST {
   COURSES_PAGE = 'courses',
   LOGIN_PAGE = 'login',
-  REGISTRATION_PAGE = 'REGISTRATION',
+  REGISTRATION_PAGE = 'registration',
+}
+
+export enum LOGIN_RQ_STATUS {
+  BAD_RQ_ERROR = 'Incorrect input data!',
+  RQ_SUCCESS = 'Success!',
 }
 
 export enum TEMPLATE_STRINGS {
@@ -16,19 +21,19 @@ export enum TEMPLATE_STRINGS {
 }
 
 export interface Account {
-  account_id: string;
-  account_nickname: string;
-  account_email: string;
-  account_password: string;
-  account_status: string;
+  name?: string;
+  email?: string;
+  password?: string;
+  accessToken?: string;
+  role?: string;
 }
 
 export const ACCOUNT_DEFAULT = {
-  account_id: '',
-  account_nickname: '',
-  account_email: ',CHECK',
-  account_password: '',
-  account_status: '',
+  name: '',
+  email: '',
+  password: '',
+  accessToken: '',
+  role: '',
 };
 
 export const HIDE_PASSWORD_FLAG = true;
@@ -37,6 +42,14 @@ export const NOT_HIDDEN_PASSWORD_INPUT_TYPE = 'text';
 
 export const LOWER_THRESHOLD_FOR_RANDOM_ID = 1;
 export const UPPER_THRESHOLD_FOR_RANDOM_ID = 15;
+
+export const ACCOUNT_MOCK_REG_DATA = {
+  name: '',
+  email: 'admin@email.com',
+  password: 'admin123',
+  // accessToken: '',
+  // role: '',
+};
 
 export const ACCOUNT_MOCK_DATA = {
   account_id: '1',

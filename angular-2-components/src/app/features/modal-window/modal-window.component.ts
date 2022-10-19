@@ -8,7 +8,7 @@ import { COURSE_DEFAULT } from './modal-window.model';
   styleUrls: ['./modal-window.component.scss'],
 })
 export class ModalWindowComponent {
-  @Input() showObj: Course = COURSE_DEFAULT;
+  @Input() modalMessage: string = '';
   @Output() closeEvent = new EventEmitter<void>();
   constructor() {}
 

@@ -10,6 +10,7 @@ import { LoginComponent } from './features/login/login.component';
 import { SharedModule } from './shared/shared.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { RegistrationComponent } from './features/registration/registration.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [AppComponent, LoginComponent, RegistrationComponent],
@@ -21,6 +22,7 @@ import { RegistrationComponent } from './features/registration/registration.comp
     SharedModule,
     FontAwesomeModule,
     ReactiveFormsModule,
+    HttpClientModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

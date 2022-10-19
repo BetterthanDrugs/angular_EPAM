@@ -7,6 +7,8 @@ import {
 } from '@angular/core';
 import { Course, COURSES, INFO_MESSAGE } from './courses.model';
 import { Account, ACCOUNT_DEFAULT, ROUTS_LIST } from '../../app.model';
+import { AuthService } from '../../shared/services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-courses',
@@ -29,18 +31,23 @@ export class CoursesComponent {
   };
   buttonLogoutText = 'Logout';
   filterValue = '';
-  @Input() account: Account = ACCOUNT_DEFAULT;
+  account: Account;
+  // @Input() account: Account = ACCOUNT_DEFAULT;
   @Output() navigateEvent = new EventEmitter();
+
+  constructor(private _authService: AuthService, private _router: Router) {
+    this.account = this._authService.getUser();
+  }
 
   addCourseFunction(): void {
     this.showAddFormFlag = true;
     console.log('add test');
   }
-  constructor() {}
 
   logoutFunction(): void {
     console.log('logout test');
-    this.navigateEvent.emit(ROUTS_LIST.LOGIN_PAGE);
+    this._authService.logout();
+    this._router.navigateByUrl(ROUTS_LIST.LOGIN_PAGE);
   }
 
   searchCourse(courseName: string): void {

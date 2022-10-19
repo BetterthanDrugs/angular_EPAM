@@ -13,7 +13,6 @@ export class CourseListComponent {
   iconButtonDelete = faTrash;
 
   @Input() courses: Course[] = [];
-  showModalFlag = false;
   showEditFormFlag = false;
   editFormButtonSubmitText = 'Edit Course';
   modalObj: Course = {
@@ -24,17 +23,11 @@ export class CourseListComponent {
     duration: 0,
     authors: [],
   };
-  //todo: сделать crud на сервисах
-  // @Output() showCourseEvent = new EventEmitter();
-  // @Output() editCourseEvent = new EventEmitter();
-  // @Output() deleteCourseEvent = new EventEmitter();
 
   constructor() {}
 
   showCourseButtonEvent(course: Course): void {
-    this.showModalFlag = true;
-    this.modalObj = { ...course };
-    // this.showCourseEvent.emit(course.id);
+    console.log('showCourseButtonEvent');
   }
   editCourseButtonEvent(course: Course): void {
     // this.editCourseEvent.emit(course.id);
