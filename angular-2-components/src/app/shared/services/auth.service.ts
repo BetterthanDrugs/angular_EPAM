@@ -18,7 +18,7 @@ export class AuthService {
   private authStatus = new BehaviorSubject<boolean>(false);
   readonly authStatusFlag: Observable<boolean> = this.authStatus.asObservable();
   account: Account = ACCOUNT_MOCK_REG_DATA;
-  registraionStatus: boolean = false;
+  registrationStatus: boolean = false;
 
   constructor(
     private _http: HttpClient,
@@ -71,10 +71,10 @@ export class AuthService {
       map(response => {
         if (response.successful === true) {
           this.account = { ...account };
-          this.registraionStatus = true;
+          this.registrationStatus = true;
           return true;
         } else {
-          this.registraionStatus = false;
+          this.registrationStatus = false;
           return false;
         }
       })
