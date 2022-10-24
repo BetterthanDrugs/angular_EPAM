@@ -3,12 +3,16 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnDestroy,
+  OnInit,
   Output,
 } from '@angular/core';
 import { Course, COURSES, INFO_MESSAGE } from './courses.model';
 import { Account, ACCOUNT_DEFAULT, ROUTS_LIST } from '../../app.model';
-import { AuthService } from '../../shared/services/auth.service';
+import { AuthService } from '../../auth/auth.service';
 import { Router } from '@angular/router';
+import { ReplaySubject } from 'rxjs';
+import { CoursesStoreService } from '../../services/courses-store.service';
 
 @Component({
   selector: 'app-courses',
@@ -16,11 +20,13 @@ import { Router } from '@angular/router';
   styleUrls: ['./courses.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CoursesComponent {
+export class CoursesComponent implements OnInit, OnDestroy {
   infoMessage = INFO_MESSAGE;
   courses: Course[] = COURSES;
   showAddFormFlag = false;
   addFormButtonSubmitText = 'Add Course';
+  private readonly destroy$ = new ReplaySubject(1);
+  isLoading: boolean = false;
   modalObj: Course = {
     id: '',
     title: '',
@@ -32,10 +38,13 @@ export class CoursesComponent {
   buttonLogoutText = 'Logout';
   filterValue = '';
   account: Account;
-  // @Input() account: Account = ACCOUNT_DEFAULT;
   @Output() navigateEvent = new EventEmitter();
 
-  constructor(private _authService: AuthService, private _router: Router) {
+  constructor(
+    private _router: Router,
+    private _authService: AuthService,
+    private _courseStoreService: CoursesStoreService
+  ) {
     this.account = this._authService.getUser();
   }
 
@@ -50,14 +59,12 @@ export class CoursesComponent {
     this._router.navigateByUrl(ROUTS_LIST.LOGIN_PAGE);
   }
 
-  searchCourse(courseName: string): void {
-    console.log('search course test');
-    this.filterValue = courseName;
+  ngOnInit(): void {
+    console.log('isLoading');
   }
 
-  get coursesByFilter(): Course[] {
-    return this.courses.filter(course =>
-      course.title.match(new RegExp(this.filterValue, 'i'))
-    );
+  ngOnDestroy(): void {
+    this.destroy$.next(() => {});
+    this.destroy$.complete();
   }
 }

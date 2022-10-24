@@ -10,78 +10,106 @@ import {
   HIDDEN_PASSWORD_INPUT_TYPE,
   NOT_HIDDEN_PASSWORD_INPUT_TYPE,
   LOWER_THRESHOLD_FOR_RANDOM_ID,
-  UPPER_THRESHOLD_FOR_RANDOM_ID,
+  UPPER_THRESHOLD_FOR_RANDOM_ID, LOGIN_RQ_STATUS,
 } from 'src/app/app.model';
+import {AuthService} from "../../auth/auth.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-registration',
   templateUrl: './registration.component.html',
   styleUrls: ['./registration.component.scss'],
 })
-export class RegistrationComponent implements OnInit {
+// export class RegistrationComponent implements OnInit {
+export class RegistrationComponent {
   currentEyeIcon = faEye;
   currentPasswordInputType = HIDDEN_PASSWORD_INPUT_TYPE;
   hidePasswordFlag = HIDE_PASSWORD_FLAG;
   registrationTemplateStrings = TEMPLATE_STRINGS;
   formDataRegistration: FormGroup = new FormGroup({
-    account_nickname: new FormControl(''),
-    account_email: new FormControl(''),
-    account_password: new FormControl(''),
-    account_id: new FormControl(''),
-    account_status: new FormControl(''),
+    name: new FormControl(''),
+    email: new FormControl(''),
+    password: new FormControl(''),
   });
 
-  findInvalidControls() {
-    const invalid = [];
-    const controls = this.formDataRegistration.controls;
-    for (const name in controls) {
-      console.log('contr: ', controls[name].invalid);
-      if (controls[name].invalid) {
-        invalid.push(name);
-      }
-    }
-    return invalid;
-  }
+  showModalFlag = false;
+  currentRouterUrl = ROUTS_LIST.REGISTRATION_PAGE;
+  modalMessage = '';
 
-  ngOnInit() {
-    console.log('invalid: ', this.findInvalidControls());
-    console.log('FORM: ', this.formDataRegistration);
+  // findInvalidControls() {
+  //   const invalid = [];
+  //   const controls = this.formDataRegistration.controls;
+  //   for (const name in controls) {
+  //     console.log('contr: ', controls[name].invalid);
+  //     if (controls[name].invalid) {
+  //       invalid.push(name);
+  //     }
+  //   }
+  //   return invalid;
+  // }
+
+  constructor(private _authService: AuthService, private _router: Router) {}
+
+  // ngOnInit() {
+  // console.log('invalid: ', this.findInvalidControls());
+  // console.log('FORM: ', this.formDataRegistration);
+  // }
+
+  routerPushButtonEvent(): void {
+    this.showModalFlag = false;
+    this._router.navigateByUrl(this.currentRouterUrl);
   }
 
   @Output() navigateEvent = new EventEmitter();
   @Output() registrationEvent = new EventEmitter();
 
-  get account_nickname(): any {
-    return this.formDataRegistration.get('account_nickname');
+  get name(): any {
+    return this.formDataRegistration.get('name');
   }
 
-  get account_email(): any {
-    return this.formDataRegistration.get('account_email');
+  get email(): any {
+    return this.formDataRegistration.get('email');
   }
 
-  get account_password(): any {
-    return this.formDataRegistration.get('account_password');
+  get password(): any {
+    return this.formDataRegistration.get('password');
   }
 
   onSubmit(): void {
     if (!this.formDataRegistration.valid) {
       this.formDataRegistration.markAllAsTouched();
     } else {
-      this.formDataRegistration.patchValue({
-        account_id: randomInteger(
-          LOWER_THRESHOLD_FOR_RANDOM_ID,
-          UPPER_THRESHOLD_FOR_RANDOM_ID
-        ),
-        account_status: 'default user',
+      this._authService.register(this.formDataRegistration.value).subscribe({
+        next: () => {
+          this.currentRouterUrl = ROUTS_LIST.LOGIN_PAGE;
+          // this.showModalFlag = true;
+          this.modalMessage = LOGIN_RQ_STATUS.RQ_SUCCESS;
+          this.showModalEvent(this.modalMessage);
+        },
+        error: () => {
+          this.currentRouterUrl = ROUTS_LIST.REGISTRATION_PAGE;
+          // this.showModalFlag = false;
+          this.modalMessage = LOGIN_RQ_STATUS.BAD_RQ_ERROR;
+          this.showModalEvent(this.modalMessage);
+        },
       });
-      this.registrationEvent.emit(this.formDataRegistration.value);
-      this.navigateEvent.emit(ROUTS_LIST.COURSES_PAGE);
+      // this.formDataRegistration.patchValue({
+      //   account_id: randomInteger(
+      //     LOWER_THRESHOLD_FOR_RANDOM_ID,
+      //     UPPER_THRESHOLD_FOR_RANDOM_ID
+      //   ),
+      //   account_status: 'default user',
+      // });
+      // this.registrationEvent.emit(this.formDataRegistration.value);
+      // this.navigateEvent.emit(ROUTS_LIST.COURSES_PAGE);
     }
   }
 
   navigateToLogin(event: Event) {
     event.preventDefault();
-    this.navigateEvent.emit(ROUTS_LIST.LOGIN_PAGE);
+    // this.navigateEvent.emit(ROUTS_LIST.LOGIN_PAGE);
+    this.currentRouterUrl = ROUTS_LIST.LOGIN_PAGE;
+    this._router.navigateByUrl(this.currentRouterUrl);
   }
 
   passwordViewRegistration(): void {
@@ -90,5 +118,10 @@ export class RegistrationComponent implements OnInit {
     this.currentPasswordInputType = this.hidePasswordFlag
       ? HIDDEN_PASSWORD_INPUT_TYPE
       : NOT_HIDDEN_PASSWORD_INPUT_TYPE;
+  }
+
+  showModalEvent(message: string): void {
+    this.showModalFlag = true;
+    this.modalMessage = message;
   }
 }

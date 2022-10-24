@@ -11,7 +11,7 @@ import {
   ACCOUNT_MOCK_REG_DATA,
   LOGIN_RQ_STATUS,
 } from '../../app.model';
-import { AuthService } from '../../shared/services/auth.service';
+import { AuthService } from '../../auth/auth.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -35,22 +35,17 @@ export class LoginComponent implements OnInit {
 
   constructor(private _authService: AuthService, private _router: Router) {}
 
-  ngOnInit(): void {
-    this._authService.authStatusFlag.subscribe(authStatusFlag => {
-      if (authStatusFlag) {
-        console.log('isAuthorized');
-        this.currentRouterUrl = ROUTS_LIST.COURSES_PAGE;
-        this.modalMessage = LOGIN_RQ_STATUS.RQ_SUCCESS;
-      } else {
-        console.log('isNotAuthorized');
-        this.currentRouterUrl = ROUTS_LIST.LOGIN_PAGE;
-        this.modalMessage = LOGIN_RQ_STATUS.BAD_RQ_ERROR;
-      }
-    });
-  }
-
   @Output() navigateEvent = new EventEmitter();
   @Output() loginEvent = new EventEmitter();
+
+  ngOnInit(): void {
+    let userData = this._authService.getUser();
+    this.formDataLogin.patchValue({
+      name: userData.name,
+      email: userData.email,
+      password: userData.password,
+    });
+  }
 
   get email(): any {
     return this.formDataLogin.get('email');
@@ -67,8 +62,19 @@ export class LoginComponent implements OnInit {
 
   onSubmit(): void {
     if (this.formDataLogin.valid) {
-      this._authService.login(this.formDataLogin.value);
-      this.showModalEvent(this.modalMessage);
+      this._authService.login(this.formDataLogin.value).subscribe(
+        () => {
+          this.currentRouterUrl = ROUTS_LIST.COURSES_PAGE;
+          this.modalMessage = LOGIN_RQ_STATUS.RQ_SUCCESS;
+          this.showModalEvent(this.modalMessage);
+        },
+        error => {
+          console.log(error.error.successful);
+          this.currentRouterUrl = ROUTS_LIST.LOGIN_PAGE;
+          this.modalMessage = LOGIN_RQ_STATUS.BAD_RQ_ERROR;
+          this.showModalEvent(this.modalMessage);
+        }
+      );
     } else {
       this.formDataLogin.markAllAsTouched();
     }
@@ -89,7 +95,6 @@ export class LoginComponent implements OnInit {
   }
 
   showModalEvent(message: string): void {
-    console.log('showModalEvent');
     this.showModalFlag = true;
     this.modalMessage = message;
   }

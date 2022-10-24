@@ -10,7 +10,10 @@ import { LoginComponent } from './features/login/login.component';
 import { SharedModule } from './shared/shared.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { RegistrationComponent } from './features/registration/registration.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { ShowCourseComponent } from './features/show-course/show-course.component';
+import { TokenInterceptor } from './auth/interceptors/token.interceptor';
+import {AuthorizedGuard} from "./auth/guards/authorized.guard";
 
 @NgModule({
   declarations: [AppComponent, LoginComponent, RegistrationComponent],
@@ -24,7 +27,14 @@ import { HttpClientModule } from '@angular/common/http';
     ReactiveFormsModule,
     HttpClientModule,
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true,
+    },
+    AuthorizedGuard,
+  ],
   bootstrap: [AppComponent],
   exports: [],
 })

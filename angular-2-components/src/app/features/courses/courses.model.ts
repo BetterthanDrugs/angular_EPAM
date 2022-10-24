@@ -9,8 +9,7 @@ export interface Course {
 
 export const INFO_MESSAGE = {
   title: 'Empty list',
-  message:
-    "Please use the <b>'Add new course'</b> button to add your first course",
+  message: "Please use the 'Add new course' button to add your first course",
   buttonText: 'Add new course',
 };
 

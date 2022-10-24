@@ -8,6 +8,7 @@ import { SearchComponent } from './components/search/search.component';
 import { EmailValidatorDirective } from './directive/email-validator.directive';
 import { DurationPipe } from './pipes/duration.pipe';
 import { FormsModule } from '@angular/forms';
+import { CourseDatePipe } from './pipes/date.pipe';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { FormsModule } from '@angular/forms';
     SearchComponent,
     EmailValidatorDirective,
     DurationPipe,
+    CourseDatePipe,
   ],
   imports: [CommonModule, FontAwesomeModule, FormsModule],
   exports: [
@@ -26,6 +28,7 @@ import { FormsModule } from '@angular/forms';
     SearchComponent,
     EmailValidatorDirective,
     DurationPipe,
+    CourseDatePipe,
   ],
 })
 export class SharedModule {}

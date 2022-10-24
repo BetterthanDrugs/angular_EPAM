@@ -7,6 +7,9 @@ import { CourseListComponent } from '../course-list/course-list.component';
 import { ModalWindowComponent } from '../modal-window/modal-window.component';
 import { EditFormComponent } from '../edit-form/edit-form.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import {RouterLink} from "@angular/router";
+import {AppModule} from "../../app.module";
+import {ShowCourseComponent} from "../show-course/show-course.component";
 
 @NgModule({
   declarations: [
@@ -15,8 +18,9 @@ import { ReactiveFormsModule } from '@angular/forms';
     CourseListComponent,
     ModalWindowComponent,
     EditFormComponent,
+    ShowCourseComponent,
   ],
-  imports: [CommonModule, SharedModule, ReactiveFormsModule],
+  imports: [CommonModule, SharedModule, ReactiveFormsModule, RouterLink],
   bootstrap: [CoursesComponent],
   exports: [CoursesComponent, ModalWindowComponent],
 })

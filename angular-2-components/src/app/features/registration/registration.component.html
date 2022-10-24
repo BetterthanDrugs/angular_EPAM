@@ -1,4 +1,8 @@
 <div>
+  <app-modal-window
+    *ngIf="showModalFlag"
+    [modalMessage]="modalMessage"
+    (closeEvent)="routerPushButtonEvent()"></app-modal-window>
   <app-header> </app-header>
   <div class="registration_container">
     <form
@@ -10,18 +14,15 @@
         <label class="label">
           Name
           <input
-            id="account_nickname"
+            id="name"
             class="input"
             type="text"
             required
-            formControlName="account_nickname" />
+            formControlName="name" />
           <div
             class="alert"
-            *ngIf="
-              account_nickname.invalid &&
-              (account_nickname.dirty || account_nickname.touched)
-            ">
-            <p *ngIf="account_nickname.errors?.['required']">
+            *ngIf="name.invalid && (name.dirty || name.touched)">
+            <p *ngIf="name.errors?.['required']">
               {{ registrationTemplateStrings.NAME_REQUIRED }}
             </p>
           </div>
@@ -29,48 +30,42 @@
         <label class="label">
           Email
           <input
-            id="account_email"
+            id="email"
             class="input"
             type="email"
             required
-            formControlName="account_email"
+            formControlName="email"
             appEmailValidate />
           <div
             class="alert"
-            *ngIf="
-              account_email.invalid &&
-              (account_email.dirty || account_email.touched)
-            ">
-            <p *ngIf="account_email.errors?.['required']">
+            *ngIf="email.invalid && (email.dirty || email.touched)">
+            <p *ngIf="email.errors?.['required']">
               {{ registrationTemplateStrings.EMAIL_REQUIRED }}
             </p>
-            <p *ngIf="account_email.errors?.['email']">
-              {{ account_email.errors['email'].value }}
+            <p *ngIf="email.errors?.['email']">
+              {{ email.errors['email'].value }}
             </p>
           </div>
         </label>
         <label class="label">
           Password
           <input
-            id="account_password"
+            id="password"
             class="input"
             required
             minlength="8"
             [type]="currentPasswordInputType"
-            formControlName="account_password" />
+            formControlName="password" />
           <span class="password-icon" (click)="passwordViewRegistration()">
             <fa-icon class="" size="xs" [icon]="currentEyeIcon"> </fa-icon
           ></span>
           <div
             class="alert"
-            *ngIf="
-              account_password.invalid &&
-              (account_password.dirty || account_password.touched)
-            ">
-            <p *ngIf="account_password.errors?.['required']">
+            *ngIf="password.invalid && (password.dirty || password.touched)">
+            <p *ngIf="password.errors?.['required']">
               {{ registrationTemplateStrings.PASSWORD_REQUIRED }}
             </p>
-            <p *ngIf="account_password.errors?.['minlength']">
+            <p *ngIf="password.errors?.['minlength']">
               {{ registrationTemplateStrings.PASSWORD_LENGTH }}
             </p>
           </div>

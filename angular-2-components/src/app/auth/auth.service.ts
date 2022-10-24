@@ -7,9 +7,10 @@ import {
   map,
   Observable,
   of,
+  tap,
 } from 'rxjs';
 import { SessionStorageService } from './session-storage.service';
-import { Account, ACCOUNT_MOCK_REG_DATA } from '../../app.model';
+import { Account, ACCOUNT_MOCK_REG_DATA } from '../app.model';
 
 @Injectable({
   providedIn: 'root',
@@ -18,52 +19,50 @@ export class AuthService {
   private authStatus = new BehaviorSubject<boolean>(false);
   readonly authStatusFlag: Observable<boolean> = this.authStatus.asObservable();
   account: Account = ACCOUNT_MOCK_REG_DATA;
-  registrationStatus: boolean = false;
+
+  private isLoading$$ = new BehaviorSubject<boolean>(false);
 
   constructor(
-    private _http: HttpClient,
-    private _storage: SessionStorageService
+    private http: HttpClient,
+    private storage: SessionStorageService
   ) {}
 
   getUser() {
+    console.log('USER_DATA_AUTH_SERVICE: ', this.account);
     return this.account;
   }
 
-  login(account: Account) {
-    this._http
-      .post('http://localhost:4000/login', account)
-      .pipe(
-        finalize(() => {
-          console.log('finalize');
-        }),
-        catchError(({ error }) => of(error))
-      )
-      .subscribe((response: any) => {
+  login(account: Account): Observable<any> {
+    return this.http.post('http://localhost:4000/login', account).pipe(
+      tap((response: any) => {
         if (response.successful === true && response.result !== undefined) {
           const token = response.result;
           this.authStatus.next(true);
-          this._storage.setToken(token);
+          this.storage.setToken(token);
           this.account.accessToken = token;
         }
-      });
+      })
+    );
   }
 
-  logout(): void {
-    const token = this._storage.getToken();
-    this._http
+  logout(): Observable<any> {
+    const token = this.storage.getToken();
+    return this.http
       .delete('http://localhost:4000/logout', {
         headers: {
           Authorization: token,
         },
       })
-      .subscribe(() => {
-        this.authStatus.next(false);
-        this._storage.deleteToken();
-      });
+      .pipe(
+        tap(() => {
+          this.authStatus.next(false);
+          this.storage.deleteToken();
+        })
+      );
   }
 
   register(account: Account): Observable<any> {
-    return this._http.post('http://localhost:4000/register', account).pipe(
+    return this.http.post('http://localhost:4000/register', account).pipe(
       finalize(() => {
         console.log('finalize');
       }),
@@ -71,11 +70,6 @@ export class AuthService {
       map(response => {
         if (response.successful === true) {
           this.account = { ...account };
-          this.registrationStatus = true;
-          return true;
-        } else {
-          this.registrationStatus = false;
-          return false;
         }
       })
     );

@@ -28,6 +28,22 @@ export interface Account {
   role?: string;
 }
 
+export interface Request200<T> {
+  successful: true;
+  result: T;
+}
+
+export interface Request400 {
+  successful: false;
+  message?: string;
+  errors?: string[];
+}
+
+export interface Author {
+  id?: string;
+  name: string;
+}
+
 export const ACCOUNT_DEFAULT = {
   name: '',
   email: '',
@@ -47,8 +63,6 @@ export const ACCOUNT_MOCK_REG_DATA = {
   name: '',
   email: 'admin@email.com',
   password: 'admin123',
-  // accessToken: '',
-  // role: '',
 };
 
 export const ACCOUNT_MOCK_DATA = {
@@ -58,6 +72,10 @@ export const ACCOUNT_MOCK_DATA = {
   account_password: 'qwerty1234',
   account_status: 'user',
 };
+
+export interface SearchCourseField {
+  title: string;
+}
 
 export const passwordView = (flag: boolean) => {
   return !flag;

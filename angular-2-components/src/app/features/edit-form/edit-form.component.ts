@@ -2,7 +2,10 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Course } from '../courses/courses.model';
 import { COURSE_DEFAULT } from '../modal-window/modal-window.model';
 import { FormControl, FormGroup } from '@angular/forms';
-import { TEMPLATE_STRINGS } from '../../app.model';
+import { ROUTS_LIST, TEMPLATE_STRINGS } from '../../app.model';
+import { Router } from '@angular/router';
+import { AuthService } from '../../auth/auth.service';
+import {CoursesStoreService} from "../../services/courses-store.service";
 
 @Component({
   selector: 'app-edit-form',
@@ -35,6 +38,13 @@ export class EditFormComponent implements OnInit {
       edit_id: this.currentObj.id,
     });
   }
+  constructor(
+    private _router: Router,
+    private _authService: AuthService,
+    private _courseStoreService: CoursesStoreService
+  ) {
+    // this.account = this._authService.getUser();
+  }
 
   get edit_authors(): any {
     return this.formDataEdit.get('edit_authors');
@@ -58,6 +68,7 @@ export class EditFormComponent implements OnInit {
   onSubmit(): void {
     if (this.formDataEdit.valid) {
       console.log('Submit edit form');
+      this._router.navigateByUrl(ROUTS_LIST.COURSES_PAGE);
       this.closeEvent.emit();
     } else {
       this.formDataEdit.markAllAsTouched();
@@ -65,6 +76,7 @@ export class EditFormComponent implements OnInit {
   }
 
   closeModalButtonEvent(): void {
+    this._router.navigateByUrl(ROUTS_LIST.COURSES_PAGE);
     this.closeEvent.emit();
   }
 }
