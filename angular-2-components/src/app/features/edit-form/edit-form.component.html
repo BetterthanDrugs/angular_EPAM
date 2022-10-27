@@ -7,17 +7,15 @@
           <label class="label">
             Title
             <input
-              id="edit_title"
+              id="title"
               class="input"
               type="text"
               required
-              formControlName="edit_title" />
+              formControlName="title" />
             <div
               class="alert"
-              *ngIf="
-                edit_title.errors && (edit_title.dirty || edit_title.touched)
-              ">
-              <p *ngIf="edit_title.errors?.['required']">
+              *ngIf="title.errors && (title.dirty || title.touched)">
+              <p *ngIf="title.errors?.['required']">
                 {{ addEditFormTemplateStrings.TITLE_REQUIRED }}
               </p>
             </div>
@@ -30,19 +28,18 @@
             class="input description"
             type="description"
             required
-            formControlName="edit_description">
+            formControlName="description">
           </textarea>
           <div
             class="alert"
             *ngIf="
-              edit_description.errors &&
-              (edit_description.dirty || edit_description.touched)
+              description.errors && (description.dirty || description.touched)
             ">
-            <p *ngIf="edit_description.errors?.['required']">
+            <p *ngIf="description.errors?.['required']">
               {{ addEditFormTemplateStrings.DESCRIPTION_REQUIRED }}
             </p>
-            <p *ngIf="edit_description.errors?.['description']">
-              {{ edit_description.errors['description'].value }}
+            <p *ngIf="description.errors?.['description']">
+              {{ description.errors['description'].value }}
             </p>
           </div>
         </label>
@@ -55,7 +52,10 @@
               Authors name
               <input class="input" type="text" formControlName="new_author" />
             </label>
-            <app-button type="button" text="Add author"> </app-button>
+            <app-button
+              (click)="addAuthor()"
+              type="button"
+              text="Add author"></app-button>
           </fieldset>
           <fieldset class="edit-add-fieldset">
             <span class="block-title">Duration</span>
@@ -65,36 +65,37 @@
                 class="input"
                 type="number"
                 required
-                formControlName="edit_duration" />
+                formControlName="duration" />
               <div
                 class="alert"
-                *ngIf="
-                  edit_duration.errors &&
-                  (edit_duration.dirty || edit_duration.touched)
-                ">
-                <p *ngIf="edit_duration.errors?.['required']">
+                *ngIf="duration.errors && (duration.dirty || duration.touched)">
+                <p *ngIf="duration.errors?.['required']">
                   {{ addEditFormTemplateStrings.DURATION_REQUIRED }}
                 </p>
-                <p *ngIf="edit_duration.errors?.['min']">
+                <p *ngIf="duration.errors?.['min']">
                   {{ addEditFormTemplateStrings.DURATION_MIN }}
                 </p>
               </div>
             </label>
             <p class="duration_info">
               Duration:
-              <span>{{ edit_duration.value | durationPipe }}</span> hours
+              <span>{{ duration.value | durationPipe }}</span> hours
             </p>
+            <p class="duration_info">{{ testCase }}</p>
           </fieldset>
         </div>
         <fieldset class="edit-add-fieldset list-fields_item">
           <span class="block-title">Authors list</span>
           <ul>
-            <li class="author-item" *ngFor="let author of edit_authors.value">
+            <li class="author-item" *ngFor="let author of authors.value">
               <span>{{ author }}</span>
-              <app-button type="button" text="Delete"></app-button>
+              <app-button
+                (click)="deleteAuthor(author)"
+                type="button"
+                text="Delete"></app-button>
             </li>
           </ul>
-          <span *ngIf="edit_authors.value.length === 0">Empty</span>
+          <span *ngIf="authors.value.length === 0">Empty</span>
         </fieldset>
       </div>
     </form>

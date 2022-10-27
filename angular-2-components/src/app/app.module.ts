@@ -13,7 +13,7 @@ import { RegistrationComponent } from './features/registration/registration.comp
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ShowCourseComponent } from './features/show-course/show-course.component';
 import { TokenInterceptor } from './auth/interceptors/token.interceptor';
-import {AuthorizedGuard} from "./auth/guards/authorized.guard";
+import { AuthorizedGuard } from './auth/guards/authorized.guard';
 
 @NgModule({
   declarations: [AppComponent, LoginComponent, RegistrationComponent],

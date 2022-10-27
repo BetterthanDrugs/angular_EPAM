@@ -10,10 +10,11 @@ import { Course } from '../courses/courses.model';
 
 import { faPencil, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Router } from '@angular/router';
-import { ReplaySubject, takeUntil } from 'rxjs';
+import { concatMap, Observable, ReplaySubject, takeUntil } from 'rxjs';
 import { AuthService } from '../../auth/auth.service';
 import { Account } from '../../app.model';
 import { CoursesStoreService } from '../../services/courses-store.service';
+import { UserStoreService } from '../../user/services/user-store.service';
 
 @Component({
   selector: 'app-course-list',
@@ -25,44 +26,43 @@ import { CoursesStoreService } from '../../services/courses-store.service';
 // все компоненты не правильно подтягивают изменения из сервисов): при авторизации или поиске список курсов
 // обновляется только при доп событии. AuthGuard и interceptor тоже не подтягиваются и не отрабатывают.
 // Деавторизация тоже через раз работать начинает.
-
 export class CourseListComponent implements OnInit, OnDestroy {
   iconButtonEdit = faPencil;
   iconButtonDelete = faTrash;
   private readonly destroy$ = new ReplaySubject(1);
 
-  courses: Course[] = [];
-  showModalFlag = false;
+  courses: Observable<Course[]> = this.courseStoreService.courses$;
+  showModalInfoFlag = false;
   showEditFormFlag = false;
+  showDeleteFormFlag = false;
+  isAdmin: boolean | undefined = true;
+  isEditForm: boolean = true;
   editFormButtonSubmitText = 'Edit Course';
   account: Account;
   modalObj: Course = {
     id: '',
     title: '',
     description: '',
-    creationDate: '',
     duration: 0,
     authors: [],
   };
 
   constructor(
-    private _router: Router,
-    private _authService: AuthService,
-    private _courseStoreService: CoursesStoreService
+    private router: Router,
+    private authService: AuthService,
+    private courseStoreService: CoursesStoreService,
+    private userStoreService: UserStoreService
   ) {
-    this.account = this._authService.getUser();
+    this.account = this.authService.getUser();
   }
 
   ngOnInit(): void {
-    this._courseStoreService
-      .getAll()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe();
+    this.courseStoreService.getAll().pipe(takeUntil(this.destroy$)).subscribe();
 
-    this._courseStoreService.courses$
+    this.userStoreService.isAdmin$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(courses => {
-        this.courses = courses;
+      .subscribe(isAdmin => {
+        // this.isAdmin = isAdmin;
       });
   }
 
@@ -72,27 +72,38 @@ export class CourseListComponent implements OnInit, OnDestroy {
   }
 
   searchCourse(title: string): void {
-    console.log('search course test: ', title);
-    this._courseStoreService
+    this.courseStoreService
       .filterCourse({ title })
       .pipe(takeUntil(this.destroy$))
       .subscribe();
-    // this.filterValue = courseName;
   }
 
   showCourseButtonEvent(course: Course): void {
-    console.log('showCourseButtonEvent');
-    this.showModalFlag = true;
+    this.showModalInfoFlag = true;
     this.modalObj = { ...course };
-    this._router.navigateByUrl(`/courses/${course.id}`);
+    this.router.navigateByUrl(`/courses/${course.id}`);
   }
   editCourseButtonEvent(course: Course): void {
-    // this.editCourseEvent.emit(course.id);
     this.showEditFormFlag = true;
     this.modalObj = { ...course };
-    this._router.navigateByUrl(`/courses/edit/${course.id}`);
+    this.router.navigateByUrl(`/courses/edit/${course.id}`);
   }
   deleteCourseButtonEvent(course: Course): void {
-    // this.deleteCourseEvent.emit(course.id);
+    this.showDeleteFormFlag = true;
+    this.modalObj = { ...course };
+  }
+
+  confirmDeleteCourseButtonEvent(): void {
+    if (this.modalObj) {
+      this.courseStoreService
+        .deleteCourse(this.modalObj)
+        .pipe(
+          takeUntil(this.destroy$),
+          concatMap(() => this.courseStoreService.getAll())
+        )
+        .subscribe();
+
+      this.showDeleteFormFlag = false;
+    }
   }
 }

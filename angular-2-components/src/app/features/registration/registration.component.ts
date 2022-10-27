@@ -10,17 +10,17 @@ import {
   HIDDEN_PASSWORD_INPUT_TYPE,
   NOT_HIDDEN_PASSWORD_INPUT_TYPE,
   LOWER_THRESHOLD_FOR_RANDOM_ID,
-  UPPER_THRESHOLD_FOR_RANDOM_ID, LOGIN_RQ_STATUS,
+  UPPER_THRESHOLD_FOR_RANDOM_ID,
+  LOGIN_RQ_STATUS,
 } from 'src/app/app.model';
-import {AuthService} from "../../auth/auth.service";
-import {Router} from "@angular/router";
+import { AuthService } from '../../auth/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-registration',
   templateUrl: './registration.component.html',
   styleUrls: ['./registration.component.scss'],
 })
-// export class RegistrationComponent implements OnInit {
 export class RegistrationComponent {
   currentEyeIcon = faEye;
   currentPasswordInputType = HIDDEN_PASSWORD_INPUT_TYPE;
@@ -36,24 +36,7 @@ export class RegistrationComponent {
   currentRouterUrl = ROUTS_LIST.REGISTRATION_PAGE;
   modalMessage = '';
 
-  // findInvalidControls() {
-  //   const invalid = [];
-  //   const controls = this.formDataRegistration.controls;
-  //   for (const name in controls) {
-  //     console.log('contr: ', controls[name].invalid);
-  //     if (controls[name].invalid) {
-  //       invalid.push(name);
-  //     }
-  //   }
-  //   return invalid;
-  // }
-
   constructor(private _authService: AuthService, private _router: Router) {}
-
-  // ngOnInit() {
-  // console.log('invalid: ', this.findInvalidControls());
-  // console.log('FORM: ', this.formDataRegistration);
-  // }
 
   routerPushButtonEvent(): void {
     this.showModalFlag = false;
@@ -82,32 +65,20 @@ export class RegistrationComponent {
       this._authService.register(this.formDataRegistration.value).subscribe({
         next: () => {
           this.currentRouterUrl = ROUTS_LIST.LOGIN_PAGE;
-          // this.showModalFlag = true;
           this.modalMessage = LOGIN_RQ_STATUS.RQ_SUCCESS;
           this.showModalEvent(this.modalMessage);
         },
         error: () => {
           this.currentRouterUrl = ROUTS_LIST.REGISTRATION_PAGE;
-          // this.showModalFlag = false;
           this.modalMessage = LOGIN_RQ_STATUS.BAD_RQ_ERROR;
           this.showModalEvent(this.modalMessage);
         },
       });
-      // this.formDataRegistration.patchValue({
-      //   account_id: randomInteger(
-      //     LOWER_THRESHOLD_FOR_RANDOM_ID,
-      //     UPPER_THRESHOLD_FOR_RANDOM_ID
-      //   ),
-      //   account_status: 'default user',
-      // });
-      // this.registrationEvent.emit(this.formDataRegistration.value);
-      // this.navigateEvent.emit(ROUTS_LIST.COURSES_PAGE);
     }
   }
 
   navigateToLogin(event: Event) {
     event.preventDefault();
-    // this.navigateEvent.emit(ROUTS_LIST.LOGIN_PAGE);
     this.currentRouterUrl = ROUTS_LIST.LOGIN_PAGE;
     this._router.navigateByUrl(this.currentRouterUrl);
   }

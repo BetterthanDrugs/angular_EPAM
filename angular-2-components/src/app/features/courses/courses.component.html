@@ -5,16 +5,15 @@
       [text]="buttonLogoutText"
       (clickButton)="logoutFunction()"></app-button>
   </app-header>
-<!--  <app-search-->
-<!--    placeholder="Type course name ..."-->
-<!--    (searchEvent)="searchCourse($event)"></app-search>-->
   <app-edit-form
     *ngIf="showAddFormFlag"
+    [isEditForm]="isEditForm"
     (closeEvent)="showAddFormFlag = false"
     [buttonSubmitText]="addFormButtonSubmitText"
     [currentObj]="modalObj"></app-edit-form>
   <app-course-list> </app-course-list>
   <app-info
+    *ngIf="isAdmin"
     [option]="infoMessage"
     [isShowMessage]="!courses.length"
     (addCourseEvent)="addCourseFunction()">

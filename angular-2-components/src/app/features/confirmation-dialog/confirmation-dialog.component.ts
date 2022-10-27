@@ -1,37 +1,30 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Course } from '../courses/courses.model';
-import { ROUTS_LIST } from '../../app.model';
 import { Router } from '@angular/router';
 import { AuthService } from '../../auth/auth.service';
 import { CoursesStoreService } from '../../services/courses-store.service';
-
-export const COURSE_DEFAULT = {
-  authors: [],
-  creationDate: '',
-  description: '',
-  duration: 0,
-  id: '',
-  title: '',
-};
+import { COURSE_DEFAULT } from '../modal-window/modal-window.model';
 
 @Component({
-  selector: 'app-show-course',
-  templateUrl: './show-course.component.html',
-  styleUrls: ['./show-course.component.scss'],
+  selector: 'app-confirmation-dialog',
+  templateUrl: './confirmation-dialog.component.html',
+  styleUrls: ['./confirmation-dialog.component.scss'],
 })
-export class ShowCourseComponent implements OnInit {
+export class ConfirmationDialogComponent {
   @Input() showObj: Course = COURSE_DEFAULT;
   @Output() closeEvent = new EventEmitter<void>();
+  @Output() confirmationClickEvent = new EventEmitter<void>();
   constructor(
     private _router: Router,
     private _authService: AuthService,
     private _courseStoreService: CoursesStoreService
   ) {}
 
-  closeModalButtonEvent(): void {
-    this._router.navigateByUrl(ROUTS_LIST.COURSES_PAGE);
-    this.closeEvent.emit();
+  confirmationModalButtonEvent(): void {
+    this.confirmationClickEvent.emit();
   }
 
-  ngOnInit(): void {}
+  closeModalButtonEvent(): void {
+    this.closeEvent.emit();
+  }
 }

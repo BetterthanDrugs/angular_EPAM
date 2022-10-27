@@ -11,8 +11,9 @@ import { Course, COURSES, INFO_MESSAGE } from './courses.model';
 import { Account, ACCOUNT_DEFAULT, ROUTS_LIST } from '../../app.model';
 import { AuthService } from '../../auth/auth.service';
 import { Router } from '@angular/router';
-import { ReplaySubject } from 'rxjs';
+import { ReplaySubject, takeUntil } from 'rxjs';
 import { CoursesStoreService } from '../../services/courses-store.service';
+import { UserStoreService } from '../../user/services/user-store.service';
 
 @Component({
   selector: 'app-courses',
@@ -21,31 +22,33 @@ import { CoursesStoreService } from '../../services/courses-store.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CoursesComponent implements OnInit, OnDestroy {
-  infoMessage = INFO_MESSAGE;
-  courses: Course[] = COURSES;
   showAddFormFlag = false;
-  addFormButtonSubmitText = 'Add Course';
-  private readonly destroy$ = new ReplaySubject(1);
   isLoading: boolean = false;
+  isAdmin: undefined | boolean = true;
+  isEditForm: boolean = false;
+  addFormButtonSubmitText = 'Add Course';
+  buttonLogoutText = 'Logout';
+  infoMessage = INFO_MESSAGE;
+  filterValue = '';
+  private readonly destroy$ = new ReplaySubject(1);
   modalObj: Course = {
     id: '',
     title: '',
     description: '',
-    creationDate: '',
     duration: 0,
     authors: [],
   };
-  buttonLogoutText = 'Logout';
-  filterValue = '';
+  courses: Course[] = COURSES;
   account: Account;
   @Output() navigateEvent = new EventEmitter();
 
   constructor(
-    private _router: Router,
-    private _authService: AuthService,
-    private _courseStoreService: CoursesStoreService
+    private router: Router,
+    private authService: AuthService,
+    private courseStoreService: CoursesStoreService,
+    private userStoreService: UserStoreService
   ) {
-    this.account = this._authService.getUser();
+    this.account = this.authService.getUser();
   }
 
   addCourseFunction(): void {
@@ -55,12 +58,19 @@ export class CoursesComponent implements OnInit, OnDestroy {
 
   logoutFunction(): void {
     console.log('logout test');
-    this._authService.logout();
-    this._router.navigateByUrl(ROUTS_LIST.LOGIN_PAGE);
+    this.authService
+      .logout()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.router.navigateByUrl(ROUTS_LIST.LOGIN_PAGE));
   }
 
   ngOnInit(): void {
     console.log('isLoading');
+    this.userStoreService.isAdmin$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(isAdmin => {
+        // this.isAdmin = isAdmin;
+      });
   }
 
   ngOnDestroy(): void {

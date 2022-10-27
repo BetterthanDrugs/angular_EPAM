@@ -36,7 +36,7 @@ export class CoursesService {
 
   editCourse(course: Course): Observable<Request200<Course> | Request400> {
     return this.http.put<Request200<Course> | Request400>(
-      'http://localhost:4000/courses/${course.id}',
+      `http://localhost:4000/courses/${course.id}`,
       course
     );
   }

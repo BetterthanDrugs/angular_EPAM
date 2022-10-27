@@ -1,6 +1,5 @@
 export interface Course {
   authors: string[];
-  creationDate: string;
   description: string;
   duration: number;
   id: string;

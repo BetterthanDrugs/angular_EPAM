@@ -8,7 +8,7 @@ import { UserStoreService } from '../services/user-store.service';
   providedIn: 'root',
 })
 export class AdminGuard implements CanActivate {
-  isAdmin = false;
+  isAdmin: boolean | undefined = false;
 
   constructor(
     private userStoreService: UserStoreService,
@@ -20,7 +20,7 @@ export class AdminGuard implements CanActivate {
     | boolean
     | UrlTree {
     this.userStoreService.isAdmin$.subscribe(isAdmin => {
-      this.isAdmin = !!isAdmin;
+      this.isAdmin = isAdmin;
     });
     if (this.isAdmin) {
       return true;

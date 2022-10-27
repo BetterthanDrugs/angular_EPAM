@@ -1,82 +1,201 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { Course } from '../courses/courses.model';
 import { COURSE_DEFAULT } from '../modal-window/modal-window.model';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ROUTS_LIST, TEMPLATE_STRINGS } from '../../app.model';
 import { Router } from '@angular/router';
 import { AuthService } from '../../auth/auth.service';
-import {CoursesStoreService} from "../../services/courses-store.service";
+import { CoursesStoreService } from '../../services/courses-store.service';
+import { concatMap, ReplaySubject, takeUntil } from 'rxjs';
+import { AuthorsStoreService } from '../../services/authors-store.service';
 
 @Component({
   selector: 'app-edit-form',
   templateUrl: './edit-form.component.html',
   styleUrls: ['./edit-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Default,
 })
-export class EditFormComponent implements OnInit {
+export class EditFormComponent implements OnInit, OnDestroy, OnChanges {
   @Input() currentObj: Course = COURSE_DEFAULT;
   @Input() buttonSubmitText: String = '';
+  @Input() isEditForm: boolean = false;
   @Output() closeEvent = new EventEmitter<void>();
+  private readonly destroy$ = new ReplaySubject(1);
   addEditFormTemplateStrings = TEMPLATE_STRINGS;
+
+  testCase = false;
+
+  authorsTempList: any[] = [];
+  authorsList: any[] = [];
+
   formDataEdit: FormGroup = new FormGroup({
     new_author: new FormControl(''),
-    edit_authors: new FormControl(''),
-    edit_creationDate: new FormControl(''),
-    edit_description: new FormControl(''),
-    edit_duration: new FormControl(''),
-    edit_title: new FormControl(''),
-    edit_id: new FormControl(''),
+    authors: new FormControl(''),
+    description: new FormControl(''),
+    duration: new FormControl(''),
+    title: new FormControl(''),
+    id: new FormControl(''),
   });
 
   ngOnInit() {
+    this.authorsStoreService.authors$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(authors => {
+        this.authorsList = authors;
+        this.cdr.markForCheck();
+        this.formDataEdit.controls['authors'].setValue([]);
+        authors.forEach(author => {
+          if (this.authorsTempList.includes(author.name)) {
+            console.log('test: ');
+            this.formDataEdit.controls['authors'].setValue([
+              ...this.authors.value,
+              author.name,
+            ]);
+          }
+        });
+      });
+
     this.formDataEdit.setValue({
       new_author: '',
-      edit_authors: this.currentObj.authors,
-      edit_creationDate: this.currentObj.creationDate,
-      edit_description: this.currentObj.description,
-      edit_duration: this.currentObj.duration,
-      edit_title: this.currentObj.title,
-      edit_id: this.currentObj.id,
+      authors: this.currentObj.authors,
+      description: this.currentObj.description,
+      duration: this.currentObj.duration,
+      title: this.currentObj.title,
+      id: this.currentObj.id,
     });
   }
-  constructor(
-    private _router: Router,
-    private _authService: AuthService,
-    private _courseStoreService: CoursesStoreService
-  ) {
-    // this.account = this._authService.getUser();
+
+  ngOnChanges(changes: SimpleChanges) {
+    // changes.prop contains the old and the new value...
+    console.log('changes: ', changes);
   }
 
-  get edit_authors(): any {
-    return this.formDataEdit.get('edit_authors');
+  ngOnDestroy(): void {
+    this.destroy$.next(() => {});
+    this.destroy$.complete();
   }
-  get edit_creationDate(): any {
-    return this.formDataEdit.get('edit_creationDate');
+
+  constructor(
+    private router: Router,
+    private authorsStoreService: AuthorsStoreService,
+    private authService: AuthService,
+    private courseStoreService: CoursesStoreService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  get new_author(): any {
+    return this.formDataEdit.get('new_author');
   }
-  get edit_description(): any {
-    return this.formDataEdit.get('edit_description');
+  get authors(): any {
+    return this.formDataEdit.get('authors');
   }
-  get edit_title(): any {
-    return this.formDataEdit.get('edit_title');
+  get description(): any {
+    return this.formDataEdit.get('description');
   }
-  get edit_id(): any {
-    return this.formDataEdit.get('edit_id');
+  get title(): any {
+    return this.formDataEdit.get('title');
   }
-  get edit_duration(): any {
-    return this.formDataEdit.get('edit_duration');
+  get id(): any {
+    return this.formDataEdit.get('id');
+  }
+  get duration(): any {
+    return this.formDataEdit.get('duration');
   }
 
   onSubmit(): void {
-    if (this.formDataEdit.valid) {
-      console.log('Submit edit form');
-      this._router.navigateByUrl(ROUTS_LIST.COURSES_PAGE);
+    if (this.formDataEdit.valid && this.authors.value.length > 0) {
+      const { title, description, duration } = this.formDataEdit.value;
+      let authorsIdList: string[] = [];
+
+      this.authorsList.forEach(author => {
+        if (this.authorsTempList.includes(author.name)) {
+          authorsIdList.push(author.id);
+        }
+      });
+
+      const currentCourse: Course = {
+        id: '',
+        title,
+        description,
+        duration,
+        authors: authorsIdList,
+      };
+
+      if (this.isEditForm) {
+        this.courseStoreService
+          .editCourse(currentCourse)
+          .pipe(
+            takeUntil(this.destroy$),
+            concatMap(() => this.courseStoreService.getAll())
+          )
+          .subscribe();
+      } else {
+        this.courseStoreService
+          .createCourse(currentCourse)
+          .pipe(
+            takeUntil(this.destroy$),
+            concatMap(() => this.courseStoreService.getAll())
+          )
+          .subscribe();
+      }
+
+      this.router.navigateByUrl(ROUTS_LIST.COURSES_PAGE);
       this.closeEvent.emit();
     } else {
       this.formDataEdit.markAllAsTouched();
     }
   }
 
+  addAuthor(): void {
+    if (this.new_author.value) {
+      this.authorsStoreService
+        .addAuthor({ name: this.new_author.value })
+        .pipe(
+          takeUntil(this.destroy$),
+          concatMap(() => this.authorsStoreService.getAll())
+        )
+        .subscribe();
+      this.authorsTempList = [...this.authorsTempList, this.new_author.value];
+      this.formDataEdit.controls['new_author'].setValue('');
+    }
+  }
+
+  deleteAuthorFromTemplateList(authorName: String): void {
+    let tempAuthorsArr = [...this.authors.value];
+    const index = tempAuthorsArr.indexOf(authorName);
+    if (tempAuthorsArr.indexOf(authorName) > -1) {
+      tempAuthorsArr.splice(index, 1);
+    }
+    this.formDataEdit.controls['authors'].setValue([...tempAuthorsArr]);
+  }
+
+  deleteAuthor(authorName: String): void {
+    let rqAuthor = this.authorsList.find(author => author.name === authorName);
+    this.authorsStoreService
+      .deleteAuthor(rqAuthor)
+      .pipe(
+        takeUntil(this.destroy$),
+        concatMap(() => {
+          this.deleteAuthorFromTemplateList(authorName);
+          return this.authorsStoreService.getAll();
+        })
+      )
+      .subscribe();
+  }
+
   closeModalButtonEvent(): void {
-    this._router.navigateByUrl(ROUTS_LIST.COURSES_PAGE);
+    this.router.navigateByUrl(ROUTS_LIST.COURSES_PAGE);
     this.closeEvent.emit();
   }
 }

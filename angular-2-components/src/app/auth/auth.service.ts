@@ -11,6 +11,7 @@ import {
 } from 'rxjs';
 import { SessionStorageService } from './session-storage.service';
 import { Account, ACCOUNT_MOCK_REG_DATA } from '../app.model';
+import {UserStoreService} from "../user/services/user-store.service";
 
 @Injectable({
   providedIn: 'root',
@@ -24,7 +25,8 @@ export class AuthService {
 
   constructor(
     private http: HttpClient,
-    private storage: SessionStorageService
+    private storage: SessionStorageService,
+    private userStoreService: UserStoreService
   ) {}
 
   getUser() {
@@ -40,6 +42,9 @@ export class AuthService {
           this.authStatus.next(true);
           this.storage.setToken(token);
           this.account.accessToken = token;
+          return this.userStoreService.getUser();
+        } else {
+          return;
         }
       })
     );
