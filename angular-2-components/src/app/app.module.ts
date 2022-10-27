@@ -11,7 +11,6 @@ import { SharedModule } from './shared/shared.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { RegistrationComponent } from './features/registration/registration.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-import { ShowCourseComponent } from './features/show-course/show-course.component';
 import { TokenInterceptor } from './auth/interceptors/token.interceptor';
 import { AuthorizedGuard } from './auth/guards/authorized.guard';
 
