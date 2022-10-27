@@ -1,0 +1,67 @@
+<div>
+  <app-header> </app-header>
+  <div class="login_container">
+    <form
+      class="login_form"
+      (ngSubmit)="onSubmit()"
+      [formGroup]="formDataLogin">
+      <legend class="title">Login</legend>
+      <fieldset class="login_fieldset">
+        <label class="label">
+          Email
+          <input
+            id="account_email"
+            class="input"
+            type="email"
+            required
+            formControlName="account_email"
+            appEmailValidate />
+          <div
+            class="alert"
+            *ngIf="
+              account_email.errors &&
+              (account_email.dirty || account_email.touched)
+            ">
+            <p *ngIf="account_email.errors?.['required']">
+              {{ loginTemplateStrings.EMAIL_REQUIRED }}
+            </p>
+            <p *ngIf="account_email.errors?.['email']">
+              {{ account_email.errors['email'].value }}
+            </p>
+          </div>
+        </label>
+        <label class="label">
+          Password
+          <input
+            id="account_password"
+            class="input"
+            required
+            minlength="8"
+            [type]="currentPasswordInputType"
+            formControlName="account_password" />
+          <span class="password-icon" (click)="passwordViewLogin()">
+            <fa-icon class="" size="xs" [icon]="currentEyeIcon"> </fa-icon
+          ></span>
+          <div
+            class="alert"
+            *ngIf="
+              account_password.errors &&
+              (account_password.dirty || account_password.touched)
+            ">
+            <p *ngIf="account_password.errors?.['required']">
+              {{ loginTemplateStrings.PASSWORD_REQUIRED }}
+            </p>
+            <p *ngIf="account_password.errors?.['minlength']">
+              {{ loginTemplateStrings.PASSWORD_LENGTH }}
+            </p>
+          </div>
+        </label>
+        <app-button text="Login"></app-button>
+      </fieldset>
+    </form>
+    <div class="question">
+      <p>If you don't have an account you can</p>
+      <a href="#" (click)="navigateToRegistration($event)">Registration</a>
+    </div>
+  </div>
+</div>

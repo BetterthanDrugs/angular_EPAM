@@ -14,6 +14,8 @@ export class CourseListComponent {
 
   @Input() courses: Course[] = [];
   showModalFlag = false;
+  showEditFormFlag = false;
+  editFormButtonSubmitText = 'Edit Course';
   modalObj: Course = {
     id: '',
     title: '',
@@ -29,15 +31,17 @@ export class CourseListComponent {
 
   constructor() {}
 
-  showCourseButtonEvent(course: Course) {
+  showCourseButtonEvent(course: Course): void {
     this.showModalFlag = true;
     this.modalObj = { ...course };
     // this.showCourseEvent.emit(course.id);
   }
-  editCourseButtonEvent(course: Course) {
+  editCourseButtonEvent(course: Course): void {
     // this.editCourseEvent.emit(course.id);
+    this.showEditFormFlag = true;
+    this.modalObj = { ...course };
   }
-  deleteCourseButtonEvent(course: Course) {
+  deleteCourseButtonEvent(course: Course): void {
     // this.deleteCourseEvent.emit(course.id);
   }
 }

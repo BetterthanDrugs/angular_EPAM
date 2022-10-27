@@ -1,0 +1,60 @@
+$orange: rgba(243, 160, 86, 255); // the default color for inputs borders
+$sand_color: rgba(249, 226, 158, 255); // the default color for textareas borders
+$purple: rgba(211, 179, 241, 255); // the default color for buttons borders
+$gray: rgba(148, 147, 147, 255); // the default color for the authors section border
+$light_blue: rgba(164, 212, 239, 255); // the default color for the container, where form is placed
+$dark_blue: rgb(7, 145, 232); // the default color for the container, where form is placed
+$white: #fff;
+$danger: #dc3545; // color for errors: error message color and controls
+$light_red: rgba(241, 145, 145, 255); // color for header border
+
+.label {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 3px;
+  font-weight: bold;
+  position: relative;
+}
+
+.input {
+  font-size: 16px;
+  line-height: 26px;
+  margin-bottom: 16px;
+  border: 1px solid $orange;
+  &.description {
+    resize: none;
+    min-height: 200px;
+    font-family: inherit;
+  }
+  &:focus {
+    outline-color: $orange;
+  }
+
+  &.ng-invalid:not(form) {
+    &.ng-touched {
+      border: 1px solid $danger;
+    }
+    &:focus {
+      outline-color: $danger;
+    }
+  }
+}
+
+.alert {
+  position: absolute;
+  bottom: 0;
+  color: $danger;
+  font-weight: 300;
+  font-size: 12px;
+}
+
+.password-icon {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-30%);
+  cursor: pointer;
+}
+
+

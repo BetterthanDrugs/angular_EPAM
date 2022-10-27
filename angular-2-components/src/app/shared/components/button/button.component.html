@@ -1,4 +1,8 @@
-<button class="button" [class.hasPadding]="text" (click)="onClick()">
+<button
+  class="button"
+  type="{{ type }}"
+  [class.hasPadding]="text"
+  (click)="onClick()">
   {{ text }}
   <fa-icon *ngIf="icon" [icon]="icon"></fa-icon>
 </button>

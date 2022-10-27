@@ -7,10 +7,6 @@ export interface Course {
   title: string;
 }
 
-export interface User {
-  name: string;
-}
-
 export const INFO_MESSAGE = {
   title: 'Empty list',
   message:
@@ -36,7 +32,7 @@ export const COURSES = [
      magna aperies, amen harem maxima nebo provident facile site pianissimos total sed. Dolorous, eagle. repellent's,
      facile ut.`,
     creationDate: '02/02/2022',
-    duration: 100,
+    duration: 120,
     authors: ['NeverWinter', 'TYlilTU'],
   },
   {
@@ -46,7 +42,7 @@ export const COURSES = [
      magna aperies, amen harem maxima nebo provident facile site pianissimos total sed. Dolorous, eagle. repellent's,
      facile ut.`,
     creationDate: '03/03/2022',
-    duration: 100,
+    duration: 121,
     authors: ['Guzno', 'Jack12'],
   },
 ];

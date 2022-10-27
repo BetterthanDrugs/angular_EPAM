@@ -12,7 +12,7 @@ export class ModalWindowComponent {
   @Output() closeEvent = new EventEmitter<void>();
   constructor() {}
 
-  closeModalButtonEvent() {
+  closeModalButtonEvent(): void {
     this.closeEvent.emit();
   }
 }

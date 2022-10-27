@@ -12,7 +12,7 @@ export class InfoComponent {
   @Output() addCourseEvent = new EventEmitter();
 
   constructor() {}
-  addCourseFunction() {
-    this.addCourseEvent.emit();
-  }
+  // addCourseFunction() {
+  //   this.addCourseEvent.emit();
+  // }
 }

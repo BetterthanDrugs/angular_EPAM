@@ -8,10 +8,12 @@
       <span class="caption">Authors: </span>{{ course.authors.join(', ') }}
     </div>
     <div class="detailed-content__item">
-      <span class="caption">Duration: </span>{{ course.duration * 60 * 1000 | date: 'HH:mm' }} hours
+      <span class="caption">Duration: </span
+      >{{ course.duration | durationPipe }} hours
     </div>
     <div class="detailed-content__item">
-      <span class="caption">Created: </span>{{ course.creationDate | date: 'dd.MM.yyyy' }}
+      <span class="caption">Created: </span
+      >{{ course.creationDate | date: 'dd.MM.yyyy' }}
     </div>
     <div class="buttons-container">
       <ng-content></ng-content>

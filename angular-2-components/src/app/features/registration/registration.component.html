@@ -1,0 +1,86 @@
+<div>
+  <app-header> </app-header>
+  <div class="registration_container">
+    <form
+      class="registration_form"
+      (ngSubmit)="onSubmit()"
+      [formGroup]="formDataRegistration">
+      <legend class="title">Registration</legend>
+      <fieldset class="registration_fieldset">
+        <label class="label">
+          Name
+          <input
+            id="account_nickname"
+            class="input"
+            type="text"
+            required
+            formControlName="account_nickname" />
+          <div
+            class="alert"
+            *ngIf="
+              account_nickname.invalid &&
+              (account_nickname.dirty || account_nickname.touched)
+            ">
+            <p *ngIf="account_nickname.errors?.['required']">
+              {{ registrationTemplateStrings.NAME_REQUIRED }}
+            </p>
+          </div>
+        </label>
+        <label class="label">
+          Email
+          <input
+            id="account_email"
+            class="input"
+            type="email"
+            required
+            formControlName="account_email"
+            appEmailValidate />
+          <div
+            class="alert"
+            *ngIf="
+              account_email.invalid &&
+              (account_email.dirty || account_email.touched)
+            ">
+            <p *ngIf="account_email.errors?.['required']">
+              {{ registrationTemplateStrings.EMAIL_REQUIRED }}
+            </p>
+            <p *ngIf="account_email.errors?.['email']">
+              {{ account_email.errors['email'].value }}
+            </p>
+          </div>
+        </label>
+        <label class="label">
+          Password
+          <input
+            id="account_password"
+            class="input"
+            required
+            minlength="8"
+            [type]="currentPasswordInputType"
+            formControlName="account_password" />
+          <span class="password-icon" (click)="passwordViewRegistration()">
+            <fa-icon class="" size="xs" [icon]="currentEyeIcon"> </fa-icon
+          ></span>
+          <div
+            class="alert"
+            *ngIf="
+              account_password.invalid &&
+              (account_password.dirty || account_password.touched)
+            ">
+            <p *ngIf="account_password.errors?.['required']">
+              {{ registrationTemplateStrings.PASSWORD_REQUIRED }}
+            </p>
+            <p *ngIf="account_password.errors?.['minlength']">
+              {{ registrationTemplateStrings.PASSWORD_LENGTH }}
+            </p>
+          </div>
+        </label>
+        <app-button text="Registration"></app-button>
+      </fieldset>
+    </form>
+    <div class="question">
+      <p>If you have an account you can</p>
+      <a href="#" (click)="navigateToLogin($event)">Login</a>
+    </div>
+  </div>
+</div>
