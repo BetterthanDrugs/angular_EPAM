@@ -13,6 +13,10 @@ import { RegistrationComponent } from './features/registration/registration.comp
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { TokenInterceptor } from './auth/interceptors/token.interceptor';
 import { AuthorizedGuard } from './auth/guards/authorized.guard';
+import { StoreModule } from '@ngrx/store';
+import { effects, reducers } from './store';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 @NgModule({
   declarations: [AppComponent, LoginComponent, RegistrationComponent],
@@ -25,6 +29,9 @@ import { AuthorizedGuard } from './auth/guards/authorized.guard';
     FontAwesomeModule,
     ReactiveFormsModule,
     HttpClientModule,
+    StoreModule.forRoot(reducers),
+    EffectsModule.forRoot(effects),
+    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: false }),
   ],
   providers: [
     {
