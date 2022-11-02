@@ -2,18 +2,18 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
-  Input,
   OnDestroy,
   OnInit,
   Output,
 } from '@angular/core';
 import { Course, COURSES, INFO_MESSAGE } from './courses.model';
-import { Account, ACCOUNT_DEFAULT, ROUTS_LIST } from '../../app.model';
+import { Account, ROUTS_LIST } from '../../app.model';
 import { AuthService } from '../../auth/auth.service';
 import { Router } from '@angular/router';
 import { ReplaySubject, takeUntil } from 'rxjs';
-import { CoursesStoreService } from '../../services/courses-store.service';
-import { UserStoreService } from '../../user/services/user-store.service';
+import { AuthStateFacade } from 'src/app/auth/store/auth.facade';
+import { UserStateFacade } from 'src/app/user/store/user.facade';
+
 
 @Component({
   selector: 'app-courses',
@@ -21,16 +21,16 @@ import { UserStoreService } from '../../user/services/user-store.service';
   styleUrls: ['./courses.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CoursesComponent implements OnInit, OnDestroy {
+export class CoursesComponent implements OnDestroy {
   showAddFormFlag = false;
   isLoading: boolean = false;
-  isAdmin: undefined | boolean = true;
   isEditForm: boolean = false;
   addFormButtonSubmitText = 'Add Course';
   buttonLogoutText = 'Logout';
   infoMessage = INFO_MESSAGE;
   filterValue = '';
   private readonly destroy$ = new ReplaySubject(1);
+  isAdmin = this.userStateFacade.isAdmin$;
   modalObj: Course = {
     id: '',
     title: '',
@@ -45,32 +45,23 @@ export class CoursesComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private authService: AuthService,
-    private courseStoreService: CoursesStoreService,
-    private userStoreService: UserStoreService
+    private userStateFacade: UserStateFacade,
+    private authStateFacade: AuthStateFacade,
   ) {
     this.account = this.authService.getUser();
   }
 
   addCourseFunction(): void {
     this.showAddFormFlag = true;
-    console.log('add test');
   }
 
   logoutFunction(): void {
-    console.log('logout test');
     this.authService
       .logout()
       .pipe(takeUntil(this.destroy$))
-      .subscribe(() => this.router.navigateByUrl(ROUTS_LIST.LOGIN_PAGE));
-  }
-
-  ngOnInit(): void {
-    console.log('isLoading');
-    this.userStoreService.isAdmin$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(isAdmin => {
-        // this.isAdmin = isAdmin;
-      });
+      .subscribe();
+    this.authStateFacade.logout();
+    this.router.navigateByUrl(ROUTS_LIST.LOGIN_PAGE)
   }
 
   ngOnDestroy(): void {

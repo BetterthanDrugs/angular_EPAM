@@ -15,11 +15,11 @@ export class UserEffects {
         this.userService.getUser().pipe(
           map(user =>
             UserActions.requestCurrentUserSuccess({
-              name: user.name || '',
               isAdmin: user.role === 'admin',
+              name: user.name ? user.name : '',
             })
           ),
-          catchError(() => of(UserActions.requestCurrentUserFail()))
+          catchError(() => of(UserActions.requestCurrentUserError()))
         )
       )
     );

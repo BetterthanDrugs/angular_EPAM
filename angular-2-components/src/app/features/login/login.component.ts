@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { FormControl, FormGroup } from '@angular/forms';
 import {
@@ -13,15 +13,18 @@ import {
 } from '../../app.model';
 import { AuthService } from '../../auth/auth.service';
 import { Router } from '@angular/router';
+import { AuthStateFacade } from 'src/app/auth/store/auth.facade';
+import { ReplaySubject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
   currentEyeIcon = faEye;
   currentPasswordInputType = HIDDEN_PASSWORD_INPUT_TYPE;
+  private readonly destroy$ = new ReplaySubject(1);
   hidePasswordFlag = HIDE_PASSWORD_FLAG;
   loginTemplateStrings = TEMPLATE_STRINGS;
   formDataLogin: FormGroup = new FormGroup({
@@ -33,7 +36,7 @@ export class LoginComponent implements OnInit {
   showModalFlag = false;
   modalMessage = '';
 
-  constructor(private _authService: AuthService, private _router: Router) {}
+  constructor(private _authService: AuthService, private _router: Router,  private authStateFacade: AuthStateFacade) {}
 
   @Output() navigateEvent = new EventEmitter();
   @Output() loginEvent = new EventEmitter();
@@ -45,6 +48,11 @@ export class LoginComponent implements OnInit {
       email: userData.email,
       password: userData.password,
     });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next(() => {});
+    this.destroy$.complete();
   }
 
   get email(): any {
@@ -62,19 +70,21 @@ export class LoginComponent implements OnInit {
 
   onSubmit(): void {
     if (this.formDataLogin.valid) {
-      this._authService.login(this.formDataLogin.value).subscribe(
-        () => {
+      this.authStateFacade.login(this.formDataLogin.value);
+      this.authStateFacade.isAuthorized$.pipe(takeUntil(this.destroy$)).subscribe(isAuthorized => {
+        if (isAuthorized) {
           this.currentRouterUrl = ROUTS_LIST.COURSES_PAGE;
           this.modalMessage = LOGIN_RQ_STATUS.RQ_SUCCESS;
           this.showModalEvent(this.modalMessage);
-        },
-        error => {
-          console.log(error.error.successful);
+        }
+      });
+      this.authStateFacade.errorMessageLogin$.pipe(takeUntil(this.destroy$)).subscribe(loginErrorMessage => {
+        if (loginErrorMessage) {
           this.currentRouterUrl = ROUTS_LIST.LOGIN_PAGE;
           this.modalMessage = LOGIN_RQ_STATUS.BAD_RQ_ERROR;
           this.showModalEvent(this.modalMessage);
         }
-      );
+      });
     } else {
       this.formDataLogin.markAllAsTouched();
     }

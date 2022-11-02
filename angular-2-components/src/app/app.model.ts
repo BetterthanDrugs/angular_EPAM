@@ -41,7 +41,7 @@ export interface Request400 {
 
 export interface Author {
   id?: string;
-  name: string;
+  name?: string;
 }
 
 export const ACCOUNT_DEFAULT = {
@@ -52,6 +52,7 @@ export const ACCOUNT_DEFAULT = {
   role: '',
 };
 
+export const BACK_END_SOURCE_URL = 'http://localhost:4000';
 export const HIDE_PASSWORD_FLAG = true;
 export const HIDDEN_PASSWORD_INPUT_TYPE = 'password';
 export const NOT_HIDDEN_PASSWORD_INPUT_TYPE = 'text';

@@ -68,7 +68,7 @@ export class CoursesStoreService {
     return this.coursesService.editCourse(course);
   }
 
-  filterCourse(filter: SearchCourseField): Observable<Course[]> {
+  filterCourse(filter: string): Observable<Course[]> {
     this.isLoading$$.next(true);
     return combineLatest([
       this.coursesService.filterCourse(filter),

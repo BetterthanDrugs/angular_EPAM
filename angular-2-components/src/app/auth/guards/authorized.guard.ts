@@ -1,29 +1,23 @@
 import { Injectable } from '@angular/core';
 import { CanLoad, Router, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
-import { AuthService } from '../auth.service';
+import { AuthStateFacade } from '../store/auth.facade';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthorizedGuard implements CanLoad {
-  constructor(private authService: AuthService, private router: Router) {}
-  authStatusFlag = false;
+  isAuthorized = false;
 
-  canLoad():
-    | Observable<boolean | UrlTree>
-    | Promise<boolean | UrlTree>
-    | boolean
-    | UrlTree {
-    this.authService.authStatusFlag.subscribe(authStatus => {
-      this.authStatusFlag = authStatus;
-      console.log('Guard');
+  constructor(private authStateFacade: AuthStateFacade, private router: Router) {}
+  canLoad(): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+    this.authStateFacade.isAuthorized$.subscribe(isAuthorized => {
+      this.isAuthorized = isAuthorized;
     });
-    if (this.authStatusFlag) {
-      console.log('Guard');
+    if (this.isAuthorized) {
       return true;
     }
-    console.log('Guard');
+
     return this.router.createUrlTree(['/login']);
   }
 }

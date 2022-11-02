@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { Request200, Request400, SearchCourseField } from '../app.model';
+import { BACK_END_SOURCE_URL, Request200, Request400, SearchCourseField } from '../app.model';
 import { Course } from '../features/courses/courses.model';
 
 
@@ -13,15 +13,15 @@ export class CoursesService {
 
   getAll(): Observable<Course[]> {
     return this.http
-      .get<Request200<Course[]>>('http://localhost:4000/courses/all')
+      .get<Request200<Course[]>>(`${BACK_END_SOURCE_URL}/courses/all`)
       .pipe(map(response => response.result));
   }
 
-  filterCourse(filter: SearchCourseField): Observable<Course[]> {
+  filterCourse(filter: string): Observable<Course[]> {
     return this.http
       .get<Request200<Course[]>>(
-        `http://localhost:4000/courses/filter?${
-          filter.title ? `title=${filter.title}` : ''
+        `${BACK_END_SOURCE_URL}/courses/filter?${
+          filter ? `title=${filter}` : ''
         }`
       )
       .pipe(map(response => response.result));
@@ -29,25 +29,25 @@ export class CoursesService {
 
   createCourse(course: Course): Observable<Request200<Course> | Request400> {
     return this.http.post<Request200<Course> | Request400>(
-      'http://localhost:4000/courses/add',
+      `${BACK_END_SOURCE_URL}/courses/add`,
       course
     );
   }
 
   editCourse(course: Course): Observable<Request200<Course> | Request400> {
     return this.http.put<Request200<Course> | Request400>(
-      `http://localhost:4000/courses/${course.id}`,
+      `${BACK_END_SOURCE_URL}/courses/${course.id}`,
       course
     );
   }
 
   deleteCourse(course: Course): Observable<Request400 | {}> {
-    return this.http.delete(`http://localhost:4000/courses/${course.id}`);
+    return this.http.delete(`${BACK_END_SOURCE_URL}/courses/${course.id}`);
   }
 
   getCourse(course: Course): Observable<Request200<Course> | Request400> {
     return this.http.get<Request200<Course> | Request400>(
-      `http://localhost:4000/courses/${course.title}`
+      `${BACK_END_SOURCE_URL}/courses/${course.title}`
     );
   }
 }

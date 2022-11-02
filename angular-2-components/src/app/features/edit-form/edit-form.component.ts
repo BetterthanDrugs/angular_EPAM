@@ -4,21 +4,18 @@ import {
   Component,
   EventEmitter,
   Input,
-  OnChanges,
   OnDestroy,
   OnInit,
   Output,
-  SimpleChanges,
 } from '@angular/core';
 import { Course } from '../courses/courses.model';
 import { COURSE_DEFAULT } from '../modal-window/modal-window.model';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ROUTS_LIST, TEMPLATE_STRINGS } from '../../app.model';
 import { Router } from '@angular/router';
-import { AuthService } from '../../auth/auth.service';
-import { CoursesStoreService } from '../../services/courses-store.service';
-import { concatMap, ReplaySubject, takeUntil } from 'rxjs';
-import { AuthorsStoreService } from '../../services/authors-store.service';
+import { ReplaySubject, takeUntil } from 'rxjs';
+import { AuthorsStateFacade } from 'src/app/store/authors/authors.facade';
+import { CoursesStateFacade } from 'src/app/store/courses/courses.facade';
 
 @Component({
   selector: 'app-edit-form',
@@ -26,7 +23,7 @@ import { AuthorsStoreService } from '../../services/authors-store.service';
   styleUrls: ['./edit-form.component.scss'],
   changeDetection: ChangeDetectionStrategy.Default,
 })
-export class EditFormComponent implements OnInit, OnDestroy, OnChanges {
+export class EditFormComponent implements OnInit, OnDestroy {
   @Input() currentObj: Course = COURSE_DEFAULT;
   @Input() buttonSubmitText: String = '';
   @Input() isEditForm: boolean = false;
@@ -49,15 +46,12 @@ export class EditFormComponent implements OnInit, OnDestroy, OnChanges {
   });
 
   ngOnInit() {
-    this.authorsStoreService.authors$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(authors => {
+    this.authorsStateFacade.authors$.pipe(takeUntil(this.destroy$)).subscribe(authors => {
         this.authorsList = authors;
         this.cdr.markForCheck();
         this.formDataEdit.controls['authors'].setValue([]);
         authors.forEach(author => {
           if (this.authorsTempList.includes(author.name)) {
-            console.log('test: ');
             this.formDataEdit.controls['authors'].setValue([
               ...this.authors.value,
               author.name,
@@ -76,11 +70,6 @@ export class EditFormComponent implements OnInit, OnDestroy, OnChanges {
     });
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    // changes.prop contains the old and the new value...
-    console.log('changes: ', changes);
-  }
-
   ngOnDestroy(): void {
     this.destroy$.next(() => {});
     this.destroy$.complete();
@@ -88,10 +77,9 @@ export class EditFormComponent implements OnInit, OnDestroy, OnChanges {
 
   constructor(
     private router: Router,
-    private authorsStoreService: AuthorsStoreService,
-    private authService: AuthService,
-    private courseStoreService: CoursesStoreService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private authorsStateFacade: AuthorsStateFacade, 
+    private courseStateFacade: CoursesStateFacade,
   ) {}
 
   get new_author(): any {
@@ -125,7 +113,7 @@ export class EditFormComponent implements OnInit, OnDestroy, OnChanges {
       });
 
       const currentCourse: Course = {
-        id: '',
+        id: this.currentObj.id ? this.currentObj.id : '',
         title,
         description,
         duration,
@@ -133,22 +121,11 @@ export class EditFormComponent implements OnInit, OnDestroy, OnChanges {
       };
 
       if (this.isEditForm) {
-        this.courseStoreService
-          .editCourse(currentCourse)
-          .pipe(
-            takeUntil(this.destroy$),
-            concatMap(() => this.courseStoreService.getAll())
-          )
-          .subscribe();
+        this.courseStateFacade.editCourse(currentCourse);
       } else {
-        this.courseStoreService
-          .createCourse(currentCourse)
-          .pipe(
-            takeUntil(this.destroy$),
-            concatMap(() => this.courseStoreService.getAll())
-          )
-          .subscribe();
+        this.courseStateFacade.createCourse(currentCourse);
       }
+      this.courseStateFacade.getCourses();
 
       this.router.navigateByUrl(ROUTS_LIST.COURSES_PAGE);
       this.closeEvent.emit();
@@ -159,13 +136,7 @@ export class EditFormComponent implements OnInit, OnDestroy, OnChanges {
 
   addAuthor(): void {
     if (this.new_author.value) {
-      this.authorsStoreService
-        .addAuthor({ name: this.new_author.value })
-        .pipe(
-          takeUntil(this.destroy$),
-          concatMap(() => this.authorsStoreService.getAll())
-        )
-        .subscribe();
+      this.authorsStateFacade.addAuthor({ name: this.new_author.value });
       this.authorsTempList = [...this.authorsTempList, this.new_author.value];
       this.formDataEdit.controls['new_author'].setValue('');
     }
@@ -181,17 +152,11 @@ export class EditFormComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   deleteAuthor(authorName: String): void {
+    this.authorsStateFacade.authors$.pipe();
+    
     let rqAuthor = this.authorsList.find(author => author.name === authorName);
-    this.authorsStoreService
-      .deleteAuthor(rqAuthor)
-      .pipe(
-        takeUntil(this.destroy$),
-        concatMap(() => {
-          this.deleteAuthorFromTemplateList(authorName);
-          return this.authorsStoreService.getAll();
-        })
-      )
-      .subscribe();
+    this.authorsStateFacade.deleteAuthor(rqAuthor);
+    this.deleteAuthorFromTemplateList(authorName);
   }
 
   closeModalButtonEvent(): void {

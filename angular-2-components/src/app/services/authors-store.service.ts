@@ -23,9 +23,9 @@ export class AuthorsStoreService {
     );
   }
 
-  addAuthor(author: Author): Observable<Request200<Author> | Request400> {
-    return this.authorService.addAuthor(author);
-  }
+  // addAuthor(author: Author): Observable<Request200<Author>> {
+  //   return '';
+  // }
 
   deleteAuthor(author: Author): Observable<Request400 | {}> {
     return this.authorService.deleteAuthor(author);

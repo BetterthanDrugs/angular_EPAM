@@ -17,6 +17,9 @@ import { StoreModule } from '@ngrx/store';
 import { effects, reducers } from './store';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { AuthModule } from './auth/auth.module';
+import { AuthorsStateFacade } from './store/authors/authors.facade';
+import { CoursesStateFacade } from './store/courses/courses.facade';
 
 @NgModule({
   declarations: [AppComponent, LoginComponent, RegistrationComponent],
@@ -32,6 +35,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
     StoreModule.forRoot(reducers),
     EffectsModule.forRoot(effects),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: false }),
+    AuthModule
   ],
   providers: [
     {
@@ -39,7 +43,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
       useClass: TokenInterceptor,
       multi: true,
     },
-    AuthorizedGuard,
+    AuthorizedGuard, AuthorsStateFacade, CoursesStateFacade
   ],
   bootstrap: [AppComponent],
   exports: [],
