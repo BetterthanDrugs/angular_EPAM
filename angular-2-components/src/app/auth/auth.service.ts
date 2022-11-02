@@ -30,7 +30,6 @@ export class AuthService {
   ) {}
 
   getUser() {
-    console.log('USER_DATA_AUTH_SERVICE: ', this.account);
     return this.account;
   }
 

@@ -53,11 +53,9 @@ export class CoursesComponent implements OnInit, OnDestroy {
 
   addCourseFunction(): void {
     this.showAddFormFlag = true;
-    console.log('add test');
   }
 
   logoutFunction(): void {
-    console.log('logout test');
     this.authService
       .logout()
       .pipe(takeUntil(this.destroy$))
@@ -65,7 +63,6 @@ export class CoursesComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    console.log('isLoading');
     this.userStoreService.isAdmin$
       .pipe(takeUntil(this.destroy$))
       .subscribe(isAdmin => {

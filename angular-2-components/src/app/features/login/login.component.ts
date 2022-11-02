@@ -69,7 +69,6 @@ export class LoginComponent implements OnInit {
           this.showModalEvent(this.modalMessage);
         },
         error => {
-          console.log(error.error.successful);
           this.currentRouterUrl = ROUTS_LIST.LOGIN_PAGE;
           this.modalMessage = LOGIN_RQ_STATUS.BAD_RQ_ERROR;
           this.showModalEvent(this.modalMessage);

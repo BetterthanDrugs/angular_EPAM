@@ -4,11 +4,9 @@ import {
   Component,
   EventEmitter,
   Input,
-  OnChanges,
   OnDestroy,
   OnInit,
   Output,
-  SimpleChanges,
 } from '@angular/core';
 import { Course } from '../courses/courses.model';
 import { COURSE_DEFAULT } from '../modal-window/modal-window.model';
@@ -26,7 +24,7 @@ import { AuthorsStoreService } from '../../services/authors-store.service';
   styleUrls: ['./edit-form.component.scss'],
   changeDetection: ChangeDetectionStrategy.Default,
 })
-export class EditFormComponent implements OnInit, OnDestroy, OnChanges {
+export class EditFormComponent implements OnInit, OnDestroy {
   @Input() currentObj: Course = COURSE_DEFAULT;
   @Input() buttonSubmitText: String = '';
   @Input() isEditForm: boolean = false;
@@ -57,7 +55,6 @@ export class EditFormComponent implements OnInit, OnDestroy, OnChanges {
         this.formDataEdit.controls['authors'].setValue([]);
         authors.forEach(author => {
           if (this.authorsTempList.includes(author.name)) {
-            console.log('test: ');
             this.formDataEdit.controls['authors'].setValue([
               ...this.authors.value,
               author.name,
@@ -74,11 +71,6 @@ export class EditFormComponent implements OnInit, OnDestroy, OnChanges {
       title: this.currentObj.title,
       id: this.currentObj.id,
     });
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    // changes.prop contains the old and the new value...
-    console.log('changes: ', changes);
   }
 
   ngOnDestroy(): void {

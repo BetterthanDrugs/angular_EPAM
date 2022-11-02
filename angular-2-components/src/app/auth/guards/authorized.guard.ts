@@ -17,13 +17,10 @@ export class AuthorizedGuard implements CanLoad {
     | UrlTree {
     this.authService.authStatusFlag.subscribe(authStatus => {
       this.authStatusFlag = authStatus;
-      console.log('Guard');
     });
     if (this.authStatusFlag) {
-      console.log('Guard');
       return true;
     }
-    console.log('Guard');
     return this.router.createUrlTree(['/login']);
   }
 }
