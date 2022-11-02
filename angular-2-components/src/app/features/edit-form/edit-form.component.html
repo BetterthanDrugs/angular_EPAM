@@ -1,5 +1,9 @@
 <div class="backdrop"></div>
 <div class="modal">
+  <app-modal-window
+  *ngIf="showModalAuthorsValidFlag"
+  [modalMessage]="modalMessage"
+  (closeEvent)="closeModalMessageEvent()"></app-modal-window>
   <nav class="navbar">
     <form [formGroup]="formDataEdit" class="form" (ngSubmit)="onSubmit()">
       <fieldset class="edit-add-fieldset">
@@ -57,6 +61,7 @@
               type="button"
               text="Add author"></app-button>
           </fieldset>
+          
           <fieldset class="edit-add-fieldset">
             <span class="block-title">Duration</span>
             <label class="label">
@@ -81,7 +86,6 @@
               Duration:
               <span>{{ duration.value | durationPipe }}</span> hours
             </p>
-            <p class="duration_info">{{ testCase }}</p>
           </fieldset>
         </div>
         <fieldset class="edit-add-fieldset list-fields_item">

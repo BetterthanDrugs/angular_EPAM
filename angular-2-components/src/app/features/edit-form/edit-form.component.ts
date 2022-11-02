@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { Course } from '../courses/courses.model';
 import { COURSE_DEFAULT } from '../modal-window/modal-window.model';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ROUTS_LIST, TEMPLATE_STRINGS } from '../../app.model';
 import { Router } from '@angular/router';
 import { ReplaySubject, takeUntil } from 'rxjs';
@@ -30,17 +30,17 @@ export class EditFormComponent implements OnInit, OnDestroy {
   @Output() closeEvent = new EventEmitter<void>();
   private readonly destroy$ = new ReplaySubject(1);
   addEditFormTemplateStrings = TEMPLATE_STRINGS;
-
-  testCase = false;
+  modalMessage = '';
+  showModalAuthorsValidFlag = false;
 
   authorsTempList: any[] = [];
   authorsList: any[] = [];
 
   formDataEdit: FormGroup = new FormGroup({
     new_author: new FormControl(''),
-    authors: new FormControl(''),
+    authors: new FormControl('', [Validators.minLength(1)]),
     description: new FormControl(''),
-    duration: new FormControl(''),
+    duration: new FormControl('', [Validators.min(1)]),
     title: new FormControl(''),
     id: new FormControl(''),
   });
@@ -109,6 +109,10 @@ export class EditFormComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(): void {
+    if (this.formDataEdit.valid && this.authors.value.length === 0) {
+      this.showModalEvent(this.addEditFormTemplateStrings.AUTHOR_MIN);
+    }
+
     if (this.formDataEdit.valid && this.authors.value.length > 0) {
       const { title, description, duration } = this.formDataEdit.value;
       let authorsIdList: string[] = [];
@@ -169,5 +173,14 @@ export class EditFormComponent implements OnInit, OnDestroy {
   closeModalButtonEvent(): void {
     this.router.navigateByUrl(ROUTS_LIST.COURSES_PAGE);
     this.closeEvent.emit();
+  }
+
+  closeModalMessageEvent(): void {
+    this.showModalAuthorsValidFlag = false;
+  }
+
+  showModalEvent(message: string): void {
+    this.showModalAuthorsValidFlag = true;
+    this.modalMessage = message;
   }
 }
