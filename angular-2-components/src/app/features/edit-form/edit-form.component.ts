@@ -46,8 +46,15 @@ export class EditFormComponent implements OnInit, OnDestroy {
   });
 
   ngOnInit() {
+    if (this.authorsTempList.length === 0 && this.currentObj.id !== ''){
+      this.authorsTempList = [... this.currentObj.authors];
+    }
     this.authorsStateFacade.authors$.pipe(takeUntil(this.destroy$)).subscribe(authors => {
         this.authorsList = authors;
+        if (this.authorsList.length === 0) {
+          this.authorsStateFacade.getAuthors();
+        }
+        
         this.cdr.markForCheck();
         this.formDataEdit.controls['authors'].setValue([]);
         authors.forEach(author => {
