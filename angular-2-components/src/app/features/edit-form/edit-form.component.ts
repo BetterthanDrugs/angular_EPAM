@@ -13,7 +13,7 @@ import { COURSE_DEFAULT } from '../modal-window/modal-window.model';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ROUTS_LIST, TEMPLATE_STRINGS } from '../../app.model';
 import { Router } from '@angular/router';
-import { ReplaySubject, takeUntil } from 'rxjs';
+import { elementAt, ReplaySubject, takeUntil } from 'rxjs';
 import { AuthorsStateFacade } from 'src/app/store/authors/authors.facade';
 import { CoursesStateFacade } from 'src/app/store/courses/courses.facade';
 
@@ -54,7 +54,6 @@ export class EditFormComponent implements OnInit, OnDestroy {
         if (this.authorsList.length === 0) {
           this.authorsStateFacade.getAuthors();
         }
-        
         this.cdr.markForCheck();
         this.formDataEdit.controls['authors'].setValue([]);
         authors.forEach(author => {
@@ -146,10 +145,16 @@ export class EditFormComponent implements OnInit, OnDestroy {
   }
 
   addAuthor(): void {
-    if (this.new_author.value) {
-      this.authorsStateFacade.addAuthor({ name: this.new_author.value });
-      this.authorsTempList = [...this.authorsTempList, this.new_author.value];
-      this.formDataEdit.controls['new_author'].setValue('');
+    let checkValueExisting = this.authorsList.find(element => 
+      element.name === this.new_author.value
+    );
+      if (this.new_author.value) {
+        if (!checkValueExisting) {
+          this.authorsStateFacade.addAuthor({ name: this.new_author.value });
+        }
+        this.authorsStateFacade.getAuthors();
+        this.authorsTempList = [...this.authorsTempList, this.new_author.value];
+        this.formDataEdit.controls['new_author'].setValue('');
     }
   }
 
@@ -164,9 +169,9 @@ export class EditFormComponent implements OnInit, OnDestroy {
 
   deleteAuthor(authorName: String): void {
     this.authorsStateFacade.authors$.pipe();
-    
-    let rqAuthor = this.authorsList.find(author => author.name === authorName);
-    this.authorsStateFacade.deleteAuthor(rqAuthor);
+    this.authorsList = this.authorsList.filter(author =>
+       author.name !== authorName
+    );
     this.deleteAuthorFromTemplateList(authorName);
   }
 
