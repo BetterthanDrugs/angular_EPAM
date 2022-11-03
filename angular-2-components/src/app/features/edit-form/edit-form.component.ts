@@ -158,14 +158,19 @@ export class EditFormComponent implements OnInit, OnDestroy {
   }
 
   addAuthor(): void {
+    let checkValueExisting = this.authorsList.find(element => 
+      element.name === this.new_author.value
+    );
     if (this.new_author.value) {
-      this.authorsStoreService
+      if (!checkValueExisting) {
+        this.authorsStoreService
         .addAuthor({ name: this.new_author.value })
         .pipe(
           takeUntil(this.destroy$),
           concatMap(() => this.authorsStoreService.getAll())
         )
         .subscribe();
+      }
       this.authorsTempList = [...this.authorsTempList, this.new_author.value];
       this.formDataEdit.controls['new_author'].setValue('');
     }
@@ -181,17 +186,10 @@ export class EditFormComponent implements OnInit, OnDestroy {
   }
 
   deleteAuthor(authorName: String): void {
-    let rqAuthor = this.authorsList.find(author => author.name === authorName);
-    this.authorsStoreService
-      .deleteAuthor(rqAuthor)
-      .pipe(
-        takeUntil(this.destroy$),
-        concatMap(() => {
-          this.deleteAuthorFromTemplateList(authorName);
-          return this.authorsStoreService.getAll();
-        })
-      )
-      .subscribe();
+    this.authorsList = this.authorsList.filter(author =>
+      author.name !== authorName
+   );
+   this.deleteAuthorFromTemplateList(authorName);
   }
 
   closeModalButtonEvent(): void {

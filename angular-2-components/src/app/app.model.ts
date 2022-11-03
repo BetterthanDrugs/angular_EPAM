@@ -18,6 +18,7 @@ export enum TEMPLATE_STRINGS {
   DURATION_REQUIRED = 'Duration is required',
   DURATION_MIN = 'Duration should be at least 1',
   AUTHOR_MIN = 'Author should be at least 1',
+  AUTHOR_EXIST = 'Author with this name already exist',
   PASSWORD_LENGTH = 'Password length must be at least 8 characters',
 }
 

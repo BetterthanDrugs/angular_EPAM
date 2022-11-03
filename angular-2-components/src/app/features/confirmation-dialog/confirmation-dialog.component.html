@@ -3,8 +3,10 @@
   <nav class="navbar">
     <h1>Delete "{{ showObj.title }}" course?</h1>
   </nav>
-  <app-button
-    text="Confirm"
-    (click)="confirmationModalButtonEvent()"></app-button>
-  <app-button text="Close" (click)="closeModalButtonEvent()"></app-button>
+  <div class="buttonsContainer">
+    <app-button
+      text="Confirm"
+      (click)="confirmationModalButtonEvent()"></app-button>
+    <app-button text="Close" (click)="closeModalButtonEvent()"></app-button>
+  </div>
 </div>
